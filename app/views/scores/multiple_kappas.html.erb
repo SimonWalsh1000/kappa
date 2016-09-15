@@ -1,0 +1,31 @@
+<h3>Score count: <%= @score_count %></h3>
+
+<h4>User ids satisfying parameters:<br/></h4>
+<%= @user_array %>
+
+<hr/>
+
+<h4>Number of users satisfying parameters:<br/></h4>
+<%= @user_array.count %>
+
+<hr/>
+
+<h4>Number of kappas calculated:<br/></h4>
+<%= @kappas.count %>
+
+<hr/>
+
+<h4>Expected number of Kappas:<br/></h4>
+<%= ((@user_array.count) * ((@user_array.count) - 1 ))/2 %>
+
+<hr/>
+
+<h4>Median:<br/></h4>
+<%= median(@kappas) %>
+
+<hr/>
+
+
+
+
+

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get :upload
       get :excel
       get :analysis
+      get :multiple_kappas
       post :import
     end
   end

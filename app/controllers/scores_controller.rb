@@ -11,7 +11,18 @@ class ScoresController < ApplicationController
   end
 
   def analysis
+    @score_count = Score.count
+    @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
     kappa(6, 8, "ipf")
+    @rater1_id = 6
+    @rater2_id = 8
+  end
+
+  def multiple_kappas
+    @score_count = Score.count
+    # get_users(options = { experience_lower: "", country: "", meeting: "", ipf_number: ""} )
+    @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }[0 .. 5]
+    @kappas = get_kappas(@user_array, "ipf")
   end
 
   # GET /scores/1
