@@ -1,0 +1,2 @@
+json.extract! score, :id, :case_id, :user_id, :dx1, :dx2, :dx3, :dx5, :dxcon2, :dxcon4, :job, :description, :experience, :fellowship, :meeting_type, :mdt_frequency, :ipf_number_cases, :imaging, :histopathology, :nsip, :ctd, :created_at, :updated_at
+json.url score_url(score, format: :json)

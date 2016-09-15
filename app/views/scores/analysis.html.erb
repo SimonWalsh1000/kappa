@@ -1,0 +1,152 @@
+<h3>Score count: <%= @score_count %></h3>
+
+<h4>User ids satisfying parameters:<br/></h4>
+<%= @user_array %>
+
+<h4>Number of users satisfying parameters:<br/></h4>
+<%= @user_array.count %>
+
+<hr/>
+
+<h4>Rater 1 count: <%= @rater1.count %>, Rater 2 count <%= @rater2.count %></h4>
+
+
+<hr/>
+
+
+<h4>Observed agreement</h4>
+
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th style = "text-align: center">0</th>
+    <th style = "text-align: center">1</th>
+    <th style = "text-align: center">2</th>
+    <th style = "text-align: center">3</th>
+    <th style = "text-align: center">4</th>
+    <th style = "text-align: center">total</th>
+  </tr>
+  </thead>
+  <tr>
+    <td style = "text-align: center"><%= @array_0[0] %></td>
+    <td style = "text-align: center"><%= @array_0[1] %></td>
+    <td style = "text-align: center"><%= @array_0[2] %></td>
+    <td style = "text-align: center"><%= @array_0[3] %></td>
+    <td style = "text-align: center"><%= @array_0[4] %></td>
+    <td style = "text-align: center"><%= @array_0.inject(0){|sum,x| sum + x } %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @array_1[0] %></td>
+    <td style = "text-align: center"><%= @array_1[1] %></td>
+    <td style = "text-align: center"><%= @array_1[2] %></td>
+    <td style = "text-align: center"><%= @array_1[3] %></td>
+    <td style = "text-align: center"><%= @array_1[4] %></td>
+    <td style = "text-align: center"><%= @array_1.inject(0){|sum,x| sum + x } %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @array_2[0] %></td>
+    <td style = "text-align: center"><%= @array_2[1] %></td>
+    <td style = "text-align: center"><%= @array_2[2] %></td>
+    <td style = "text-align: center"><%= @array_2[3] %></td>
+    <td style = "text-align: center"><%= @array_2[4] %></td>
+    <td style = "text-align: center"><%= @array_2.inject(0){|sum,x| sum + x } %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @array_3[0] %></td>
+    <td style = "text-align: center"><%= @array_3[1] %></td>
+    <td style = "text-align: center"><%= @array_3[2] %></td>
+    <td style = "text-align: center"><%= @array_3[3] %></td>
+    <td style = "text-align: center"><%= @array_3[4] %></td>
+    <td style = "text-align: center"><%= @array_3.inject(0){|sum,x| sum + x } %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @array_4[0] %></td>
+    <td style = "text-align: center"><%= @array_4[1] %></td>
+    <td style = "text-align: center"><%= @array_4[2] %></td>
+    <td style = "text-align: center"><%= @array_4[3] %></td>
+    <td style = "text-align: center"><%= @array_4[4] %></td>
+    <td style = "text-align: center"><%= @array_4.inject(0){|sum,x| sum + x } %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0] %></td>
+    <td style = "text-align: center"><%= @array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1] %></td>
+    <td style = "text-align: center"><%= @array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2] %></td>
+    <td style = "text-align: center"><%= @array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3] %></td>
+    <td style = "text-align: center"><%= @array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4] %></td>
+    <td style = "text-align: center"><%=        @array_4.inject(0){|sum,x| sum + x } +
+                                                @array_3.inject(0){|sum,x| sum + x } +
+                                                @array_2.inject(0){|sum,x| sum + x } +
+                                                @array_1.inject(0){|sum,x| sum + x } +
+                                                @array_0.inject(0){|sum,x| sum + x }%></td>
+  </tr>
+</table>
+
+<h4>Chance agreement</h4>
+
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th style = "text-align: center">0</th>
+    <th style = "text-align: center">1</th>
+    <th style = "text-align: center">2</th>
+    <th style = "text-align: center">3</th>
+    <th style = "text-align: center">4</th>
+    <th style = "text-align: center">total</th>
+  </tr>
+  </thead>
+  <tr>
+    <td style = "text-align: center"><%= @c_0_0 %></td>
+    <td style = "text-align: center"><%= @c_0_1 %></td>
+    <td style = "text-align: center"><%= @c_0_2 %></td>
+    <td style = "text-align: center"><%= @c_0_3 %></td>
+    <td style = "text-align: center"><%= @c_0_4 %></td>
+    <td style = "text-align: center"><%= @sum0 =(@c_0_0 +  @c_0_1 + @c_0_2 + @c_0_3 + @c_0_4).round(3) %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @c_1_0 %></td>
+    <td style = "text-align: center"><%= @c_1_1 %></td>
+    <td style = "text-align: center"><%=  @c_1_2%></td>
+    <td style = "text-align: center"><%=  @c_1_3%></td>
+    <td style = "text-align: center"><%= @c_1_4 %></td>
+    <td style = "text-align: center"><%= @sum1 =(@c_1_0 +  @c_1_1 + @c_1_2 + @c_1_3 + @c_1_4).round(3) %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%=@c_2_0    %></td>
+    <td style = "text-align: center"><%=@c_2_1    %></td>
+    <td style = "text-align: center"><%=@c_2_2  %></td>
+    <td style = "text-align: center"><%=@c_2_3    %></td>
+    <td style = "text-align: center"><%= @c_2_4   %></td>
+    <td style = "text-align: center"><%= @sum2 =(@c_2_0 +  @c_2_1 + @c_2_2 + @c_2_3 + @c_2_4).round(3) %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @c_3_0 %></td>
+    <td style = "text-align: center"><%= @c_3_1 %></td>
+    <td style = "text-align: center"><%= @c_3_2 %></td>
+    <td style = "text-align: center"><%= @c_3_3 %></td>
+    <td style = "text-align: center"><%= @c_3_4 %></td>
+    <td style = "text-align: center"><%= @sum3 =(@c_3_0 +  @c_3_1 + @c_3_2 + @c_3_3 + @c_3_4).round(3) %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @c_4_0 %></td>
+    <td style = "text-align: center"><%= @c_4_1 %></td>
+    <td style = "text-align: center"><%= @c_4_2 %></td>
+    <td style = "text-align: center"><%= @c_4_3 %></td>
+    <td style = "text-align: center"><%=@c_4_4  %></td>
+    <td style = "text-align: center"><%= @sum4 = (@c_4_0 +  @c_4_1 + @c_4_2 + @c_4_3 + @c_4_4).round(3) %></td>
+  </tr>
+  <tr>
+    <td style = "text-align: center"><%= @c_0_0 + @c_1_0 + @c_2_0  + @c_3_0 + @c_4_0 %></td>
+    <td style = "text-align: center"><%= @c_0_1 + @c_1_1 + @c_2_1  + @c_3_1 + @c_4_1 %></td>
+    <td style = "text-align: center"><%= @c_0_2 + @c_1_2 + @c_2_2  + @c_3_2 + @c_4_2 %></td>
+    <td style = "text-align: center"><%= @c_0_3 + @c_1_3 + @c_2_3  + @c_3_3 + @c_4_3 %></td>
+    <td style = "text-align: center"><%= @c_0_4 + @c_1_4 + @c_2_4  + @c_3_4 + @c_4_4 %></td>
+    <td style = "text-align: center"><%= @sum0 + @sum1 + @sum2 + @sum3 + @sum4 %></td>
+  </tr>
+</table>
+
+
+Expected <%= (@w_expected*100/60).round(3) %><br/>
+Actual <%= (@w_actual*100/60).round(3) %>
+
+<h3>Kappa: <%=@kappa.round(3) %></h3>
+<h3>WKappa: <%=@weighted_kappa.round(3) %></h3>

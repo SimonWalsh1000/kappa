@@ -1,0 +1,46 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+html {
+  height:1500px;
+}
+
+.Application{
+  //if you add positioning to this is may fuck up the modals behaviour for sharing a post
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+  background-color: #f8f8f8;
+  z-index: 1;
+  padding-top: 70px;
+}
+
+.Content {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 8px 18px -9px rgba(126,126,126,1);
+  -moz-box-shadow: 0px 8px 18px -9px rgba(126,126,126,1);
+  box-shadow: 0px 8px 18px -9px rgba(126,126,126,1);
+}
+
+h1, h2  {
+  letter-spacing: -1.5px;
+}
+
+h3, h4, h5 {
+  letter-spacing: -0.75px;
+}
+
+.ThePagingationBar {
+  text-align: center;
+  margin: 0px auto;
+}
+
+.pagination {
+  margin: 20px auto;
+}
+
+a {
+  cursor: pointer;
+}
+
+

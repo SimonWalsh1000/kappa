@@ -1,0 +1,63 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Scores</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Case</th>
+      <th>User</th>
+      <th>Dx1</th>
+      <th>Dx2</th>
+      <th>Dx3</th>
+      <th>Dx5</th>
+      <th>Dxcon2</th>
+      <th>Dxcon4</th>
+      <th>Job</th>
+      <th>Description</th>
+      <th>Experience</th>
+      <th>Fellowship</th>
+      <th>Meeting type</th>
+      <th>Mdt frequency</th>
+      <th>Ipf number cases</th>
+      <th>Imaging</th>
+      <th>Histopathology</th>
+      <th>Nsip</th>
+      <th>Ctd</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @scores.each do |score| %>
+      <tr>
+        <td><%= score.case_id %></td>
+        <td><%= score.user_id %></td>
+        <td><%= score.dx1 %></td>
+        <td><%= score.dx2 %></td>
+        <td><%= score.dx3 %></td>
+        <td><%= score.dx5 %></td>
+        <td><%= score.dxcon2 %></td>
+        <td><%= score.dxcon4 %></td>
+        <td><%= score.job %></td>
+        <td><%= score.description %></td>
+        <td><%= score.experience %></td>
+        <td><%= score.fellowship %></td>
+        <td><%= score.meeting_type %></td>
+        <td><%= score.mdt_frequency %></td>
+        <td><%= score.ipf_number_cases %></td>
+        <td><%= score.imaging %></td>
+        <td><%= score.histopathology %></td>
+        <td><%= score.nsip %></td>
+        <td><%= score.ctd %></td>
+        <td><%= link_to 'Show', score %></td>
+        <td><%= link_to 'Edit', edit_score_path(score) %></td>
+        <td><%= link_to 'Destroy', score, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Score', new_score_path %>

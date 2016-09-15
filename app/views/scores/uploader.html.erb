@@ -1,0 +1,10 @@
+<h2>Import scores</h2>
+
+<%= form_tag import_scores_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "Import", :class => "btn btn-success", :style => "margin-top:20px;" %>
+<% end %>
+<hr/>
+<%= link_to "Nuclear", nuclear_scores_path  %>
+<hr/>
+<%= link_to "Analysis", analysis_scores_path  %>
