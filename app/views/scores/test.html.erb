@@ -1,0 +1,42 @@
+
+
+
+
+<h4>Country: <%= params[:countries] %></h4>
+
+<h4>Experience: <%= params[:experience] %></h4>
+
+<h4>Meeting: <%= params[:meeting_type] %></h4>
+
+<h4>IPF cases/Month:<%= params[:ipf_number_cases] %></h4>
+
+<hr/>
+
+User ids found: <%= @query %>
+
+<hr/>
+
+Users: <%= @names.join(", ") %>
+
+<hr/>
+
+<%= form_for @score, url: test_scores_path do %>
+    <%= label_tag "Country" %>
+    <%= select_tag("countries", options_for_select(@countries), :prompt => "Please select") %><br/>
+    <%= label_tag "Experience greater than" %>
+    <%= select_tag("experience", options_for_select(@experience), :prompt => "Please select") %><br/>
+    <%= label_tag "Meeting type" %>
+    <%= select_tag("meeting_type", options_for_select([['Yes, I attend a dedicated ILD MDT meeting', 'Yes, I attend a dedicated ILD MDT meeting'],
+                                                  ['No, I do not attend/have access to a regular respiratory MDT meeting', 'No, I do not attend/have access to a regular respiratory MDT meeting'],
+                                                  ['Yes, I attend a general respiratory MDT meeting', 'Yes, I attend a general respiratory MDT meeting'], ["",""]]), :prompt => "Please select") %><br/>
+    <%= label_tag "IPF/month" %>
+    <%= select_tag("ipf_number_cases", options_for_select(@ipf), :prompt => "Please select") %><br/>
+    <%= submit_tag("Search") %>
+<% end %>
+
+
+<hr/>
+
+
+
+

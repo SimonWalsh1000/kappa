@@ -1,6 +1,11 @@
 class Score < ActiveRecord::Base
 
 
+  attr_accessor :countries
+
+
+
+
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
@@ -32,6 +37,8 @@ class Score < ActiveRecord::Base
   def name
     self.lname + " " + self.fname
   end
+
+
   
   
 end

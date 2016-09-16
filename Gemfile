@@ -16,6 +16,7 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'roo'
 gem 'annotate'
 gem 'roo-xls'
+gem 'simple_form'
 
 
 group :development, :test do

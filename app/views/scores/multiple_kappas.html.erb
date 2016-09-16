@@ -1,50 +1,85 @@
 <h3>Score count: <%= @score_count %></h3>
 
-<h4>User ids satisfying parameters:<br/></h4>
-<%= @user_array %>
+<%= form_for @score, url: test_scores_path do %>
+    <%= label_tag "Country" %>
+    <%= select_tag("countries", options_for_select(@countries), :prompt => "Please select") %><br/>
+    <%= label_tag "Experience greater than" %>
+    <%= select_tag("experience", options_for_select(@experience), :prompt => "Please select") %><br/>
+    <%= label_tag "Meeting type" %>
+    <%= select_tag("meeting_type", options_for_select([['Yes, I attend a dedicated ILD MDT meeting', 'Yes, I attend a dedicated ILD MDT meeting'],
+                                                       ['No, I do not attend/have access to a regular respiratory MDT meeting', 'No, I do not attend/have access to a regular respiratory MDT meeting'],
+                                                       ['Yes, I attend a general respiratory MDT meeting', 'Yes, I attend a general respiratory MDT meeting'], ["",""]]), :prompt => "Please select") %><br/>
+    <%= label_tag "IPF/month" %>
+    <%= select_tag("ipf_number_cases", options_for_select(@ipf), :prompt => "Please select") %><br/>
+    <%= submit_tag("Search") %>
+<% end %>
 
 <hr/>
 
-<h4>Number of users satisfying parameters:<br/></h4>
-<%= @user_array.count %>
-
-<hr/>
-
-<h4>Number of kappas calculated:<br/></h4>
-<%= @kappas.count %>
-
-<hr/>
-
-<h4>Expected number of Kappas:<br/></h4>
-<%= ((@user_array.count) * ((@user_array.count) - 1 ))/2 %>
-
-<hr/>
-
-<h4>Median:<br/></h4>
-<%= median(@kappas) %>
-<hr/>
+<% if @query && @query.count > 1 %>
 
 
+  <h4>Country: <%= params[:countries] %></h4>
 
+  <h4>Experience: <%= params[:experience] %></h4>
 
+  <h4>Meeting: <%= params[:meeting_type] %></h4>
 
+  <h4>IPF cases/Month:<%= params[:ipf_number_cases] %></h4>
 
-<table class="table table-bordered">
-  <thead>
-  <tr>
-    <th style = "text-align: center">Obs1</th>
-    <th style = "text-align: center">Obs2</th>
-    <th style = "text-align: center">wKappa</th>
-  </tr>
-  </thead>
-  <% @kappas.each do |k,v| %>
+  <hr/>
 
-      <% user1 = Score.where(user_id: k[0]).first %>
-      <% user2 = Score.where(user_id: k[1]).first %>
+  <h4>User ids satisfying parameters:<br/></h4>
+  <%= @query %>
+
+  <hr/>
+
+  <h4>Users: </h4>
+  <%= @names.join(", ") %>
+
+  <hr/>
+
+  <h4>Number of users satisfying parameters:<br/></h4>
+  <%= @query.count %>
+
+  <hr/>
+
+  <h4>Number of kappas calculated:<br/></h4>
+  <%= @kappas.count %>
+
+  <hr/>
+
+  <h4>Expected number of Kappas:<br/></h4>
+  <%= ((@query.count) * ((@query.count) - 1 ))/2 %>
+
+  <hr/>
+
+  <h4>Median:<br/></h4>
+  <%= median(@kappas) %>
+  <hr/>
+
+    <table class="table table-bordered">
+      <thead>
       <tr>
-        <td style = "text-align: center"><%= user1.user_id %>...<%= user1.name.titleize %></td>
-        <td style = "text-align: center"><%= user2.user_id %>...<%= user2.name.titleize %></td>
-        <td style = "text-align: center"> <%= v.round(4) %></td>
+        <th style = "text-align: center">Obs1</th>
+        <th style = "text-align: center">Obs2</th>
+        <th style = "text-align: center">wKappa</th>
       </tr>
-  <% end %>
-</table>
+      </thead>
+      <% @kappas.each do |k,v| %>
+
+          <% user1 = Score.where(user_id: k[0]).first %>
+          <% user2 = Score.where(user_id: k[1]).first %>
+          <tr>
+            <td style = "text-align: center"><%= user1.user_id %>...<%= user1.name.titleize %></td>
+            <td style = "text-align: center"><%= user2.user_id %>...<%= user2.name.titleize %></td>
+            <td style = "text-align: center"> <%= v.round(4) %></td>
+          </tr>
+      <% end %>
+    </table>
+
+<% else %>
+
+    <h4>No query was submitted or there is only one user satisfying those parameters.</h4>
+
+<% end %>

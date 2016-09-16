@@ -7,6 +7,8 @@ Rails.application.routes.draw do
       get :analysis
       get :multiple_kappas
       post :import
+      post :search
+      post :test
     end
   end
 

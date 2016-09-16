@@ -20,9 +20,26 @@ class ScoresController < ApplicationController
 
   def multiple_kappas
     @score_count = Score.count
-    # get_users(options = { experience_lower: "", country: "", meeting: "", ipf_number: ""} )
-    @user_array = Score.group(:user_id).count.sort_by {|_key, value| value }.map { |k, v| k }[0..114].select { |u|  Score.where(user_id: u).first.experience < 4 }
-    @kappas = get_kappas(@user_array, "ipf")
+    @score = Score.new
+    @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << ""
+    @experience = (1..50).to_a << ""
+    @ipf = (0..2).to_a.map(&:to_s) << ""
+  end
+
+  def test
+    @score_count = Score.count
+    @score = Score.new
+    @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << ""
+    @experience = (1..50).to_a << ""
+    @ipf = (0..2).to_a.map(&:to_s) << ""
+    @query = get_users(options = { experience_lower: params[:experience], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
+    @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
+    @kappas = get_kappas(@query, "ipf")
+    render 'multiple_kappas'
+  end
+
+  def search
+
   end
 
   # GET /scores/1
@@ -115,6 +132,6 @@ class ScoresController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def score_params
-      params.require(:score).permit(:case_id, :user_id, :dx1, :dx2, :dx3, :dx5, :dxcon2, :dxcon4, :job, :description, :experience, :fellowship, :meeting_type, :mdt_frequency, :ipf_number_cases, :imaging, :histopathology, :nsip, :ctd)
+      params.require(:score).permit(:Countries, :case_id, :user_id, :dx1, :dx2, :dx3, :dx5, :dxcon2, :dxcon4, :job, :description, :experience, :fellowship, :meeting_type, :mdt_frequency, :ipf_number_cases, :imaging, :histopathology, :nsip, :ctd)
     end
 end

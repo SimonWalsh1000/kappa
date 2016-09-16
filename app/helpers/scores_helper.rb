@@ -1,14 +1,23 @@
 module ScoresHelper
 
 
-   # def get_users(options = { experience_lower: "", country: "", meeting: "", ipf_number: ""} )
-   #  @users = Score.all
-   #  @users = @users.where("experience > ?", options[:experience_lower]) unless options[:country].nil?
-   #  # @users = @users.where(country: options[:country]) unless @users.where(country: options[:country]).nil?
-   #  # @users = @users.where(meeting_type: options[:meeting]) unless @users.where(meeting_type: options[:meeting]).nil?
-   #  # @users = @users.where(ipf_number_cases: options[:ipf_number]) unless @users.where(ipf_number_cases: options[:ipf_number]).nil?
-   #  @user_array = @users.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }[0 .. 5]
-   # end
+   def get_users(options = { experience_lower: nil, country: nil, meeting: nil, ipf_number: nil} )
+    query = Score.all
+    if options[:experience_lower].present?
+      query = query.where("experience > ?", options[:experience_lower])
+    end
+    if options[:country].present?
+      query = query.where(country: options[:country])
+    end
+    if options[:meeting].present?
+      query = query.where(meeting_type: options[:meeting])
+    end
+    if options[:ipf_number].present?
+      query = query.where( ipf_number_cases: options[:ipf_number])
+    end
+    query.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
+    @query = query.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
+   end
 
 
 
