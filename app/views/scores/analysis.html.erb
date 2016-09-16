@@ -1,7 +1,9 @@
 <h3>Score count: <%= @score_count %></h3>
 
 
-<%= link_to "Multiple kappas", multiple_kappas_scores_path  %>
+<%= link_to "Multiple kappas", multiple_kappas_scores_path  %><br/>
+
+<%= link_to "Nuc data", nuclear_scores_path, data: { confirm: "Are you sure?" } %>
 
 <h4>User ids satisfying parameters:<br/></h4>
 <%= @user_array %>
@@ -13,9 +15,7 @@
 
 <h4>Rater 1 count: <%= @rater1.count %>, Rater 2 count <%= @rater2.count %></h4>
 
-
 <hr/>
-
 
 <h4>Observed agreement</h4>
 
@@ -152,4 +152,4 @@ Expected <%= (@w_expected*100/60).round(3) %><br/>
 Actual <%= (@w_actual*100/60).round(3) %>
 
 <h3>Kappa: <%=@kappa.round(3) %></h3>
-<h3>WKappa: <%=@weighted_kappa.round(3) %></h3>
+<h3>wKappa: <%=@weighted_kappa.round(3) %></h3>

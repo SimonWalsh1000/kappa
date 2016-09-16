@@ -21,7 +21,7 @@ class ScoresController < ApplicationController
   def multiple_kappas
     @score_count = Score.count
     # get_users(options = { experience_lower: "", country: "", meeting: "", ipf_number: ""} )
-    @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }[0 .. 5]
+    @user_array = Score.group(:user_id).count.sort_by {|_key, value| value }.map { |k, v| k }[0..114].select { |u|  Score.where(user_id: u).first.experience < 4 }
     @kappas = get_kappas(@user_array, "ipf")
   end
 

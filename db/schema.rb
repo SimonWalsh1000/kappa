@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915183800) do
+ActiveRecord::Schema.define(version: 20160916083126) do
 
   create_table "scores", force: :cascade do |t|
     t.integer  "case_id"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20160915183800) do
     t.string   "country"
     t.string   "fname"
     t.string   "lname"
+    t.string   "status"
   end
 
 end
