@@ -1,14 +1,18 @@
 Rails.application.routes.draw do
   resources :scores do
     collection do
+      get :countries_kappa
       get :nuclear
       get :upload
       get :excel
       get :analysis
       get :multiple_kappas
+      post :multiple_kappas
       post :import
       post :search
       post :test
+      get :discrepancy
+
     end
   end
 

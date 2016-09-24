@@ -19,11 +19,27 @@ class ScoresController < ApplicationController
   end
 
   def multiple_kappas
-    @score_count = Score.count
-    @score = Score.new
-    @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << ""
-    @experience = (1..50).to_a << ""
-    @ipf = (0..2).to_a.map(&:to_s) << ""
+    if  params.has_key?(:institution) &&
+        params.has_key?(:experience) &&
+        params.has_key?(:experience_less) &&
+        params.has_key?(:countries) &&
+        params.has_key?(:meeting_type) &&
+        params.has_key?(:ipf_number_cases)
+          @score_count = Score.count
+          @score = Score.new
+          @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << "All" << "Deselect"
+          @experience = (1..50).to_a << "All" << "Deselect"
+          @ipf = (0..2).to_a.map(&:to_s) << "All" << "Deselect"
+          @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
+          @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
+          @kappas = get_kappas(@query, "hp")
+    else
+      @score_count = Score.count
+      @score = Score.new
+      @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << "All" << "Deselect"
+      @experience = (1..50).to_a  << "All" << "Deselect"
+      @ipf = (0..2).to_a.map(&:to_s)  << "All" << "Deselect"
+    end
   end
 
   def test
@@ -32,14 +48,26 @@ class ScoresController < ApplicationController
     @countries = Score.all.group(:country).count.sort_by {|_key, value| value}.map { |k, v| [k, k] } << ""
     @experience = (1..50).to_a << ""
     @ipf = (0..2).to_a.map(&:to_s) << ""
-    @query = get_users(options = { experience_lower: params[:experience], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
+    @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
     @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
-    @kappas = get_kappas(@query, "ipf")
+    @kappas = get_kappas(@query, "hp")
     render 'multiple_kappas'
   end
 
-  def search
+   def countries_kappa
+     @kappas = Hash.new
+     @countries = Score.group(:country).count.map { |k, v| k }
+     @countries.each do |c|
+      next if median(get_kappas(get_users(options = { country: c}), "ipf")).blank?
+        user_count_for_country = Score.where(country: c).count/60
+        experience_count_for_country = Score.where(country: c).map {|s| s.experience }.uniq.sum/user_count_for_country
+        @kappas[c] = [user_count_for_country, experience_count_for_country, median(get_kappas(get_users(options = { country: c}), "ipf"))]
+     end
+      @kappas
+   end
 
+  def discrepancy
+    @scores = Score.all.map { |score| score.check_diagnoses("Idiopathic pulmonary fibrosis", 20, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
   end
 
   # GET /scores/1

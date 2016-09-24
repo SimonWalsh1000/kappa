@@ -1,0 +1,26 @@
+
+
+<div class = "row">
+  <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-sm-12 col-xs-12">
+    <h3>wKappa's by country</h3>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: center">Country</th>
+        <th style = "text-align: center">Users</th>
+        <th style = "text-align: center">Mean experience</th>
+        <th style = "text-align: center">IPF</th>
+
+      </tr>
+      </thead>
+      <% @kappas.each do |c, k| %>
+          <tr>
+            <td style = "width:120px; text-align: center"><%= c %></td>
+            <td style = "width:120px; text-align: center"><%= k[0] %></td>
+            <td style = "width:120px; text-align: center"><%= k[1] %> years</td>
+            <td style = "width:120px; text-align: center"><%= k[2].round(3) if k.present?  %></td>
+          </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

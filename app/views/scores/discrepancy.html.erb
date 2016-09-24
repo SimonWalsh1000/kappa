@@ -1,0 +1,38 @@
+
+
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <h3>Close calls...<%= @scores.count %></h3>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: center">Number</th>
+        <th style = "text-align: center">Obs</th>
+        <th style = "text-align: center">Exp</th>
+        <th style = "text-align: center">Case</th>
+        <th style = "text-align: center">dx1</th>
+        <th style = "text-align: center">dx2</th>
+        <th style = "text-align: center">con1</th>
+        <th style = "text-align: center">con2</th>
+        <th style = "text-align: center">difference</th>
+      </tr>
+      <% i = 0 %>
+      <% @scores.each do |h| %>
+          <% h.each do |k, v| %>
+          <tr>
+            <% i = i + 1 %>
+            <td style = "width:120px; text-align: center"><%= i %></td>
+            <td style = "width:120px; text-align: center"><%= k[3].titleize %></td>
+            <td style = "width:120px; text-align: center"><%= k[4] %></td>
+            <td style = "width:120px; text-align: center"><%= k[2] %></td>
+            <td style = "width:120px; text-align: center"><%= k[0]%></td>
+            <td style = "width:120px; text-align: center"><%= k[1]%></td>
+            <td style = "width:120px; text-align: center"><%= v[0]%></td>
+            <td style = "width:120px; text-align: center"><%= v[1]%></td>
+            <td style = "width:120px; text-align: center"><%= (v[0] - v[1]).abs %></td>
+          </tr>
+      <% end %>
+      <% end %>
+    </table>
+  </div>
+</div>

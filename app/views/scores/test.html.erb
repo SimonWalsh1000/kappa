@@ -4,7 +4,11 @@
 
 <h4>Country: <%= params[:countries] %></h4>
 
-<h4>Experience: <%= params[:experience] %></h4>
+<h4>Experience(lower_limit): <%= params[:experience] %></h4>
+
+<h4>Experience (upper-limit): <%= params[:experience_less] %></h4>
+
+<h4>Institution type: <%= params[:institution] %></h4>
 
 <h4>Meeting: <%= params[:meeting_type] %></h4>
 
@@ -23,17 +27,22 @@ Users: <%= @names.join(", ") %>
 <%= form_for @score, url: test_scores_path do %>
     <%= label_tag "Country" %>
     <%= select_tag("countries", options_for_select(@countries), :prompt => "Please select") %><br/>
-    <%= label_tag "Experience greater than" %>
+    <%= label_tag "Experience greater than or equal to" %>
     <%= select_tag("experience", options_for_select(@experience), :prompt => "Please select") %><br/>
+    <%= label_tag "Experience less than or equal to" %>
+    <%= select_tag("experience_less", options_for_select(@experience), :prompt => "Please select") %><br/>
+    <%= label_tag "Institution type" %>
+    <%= select_tag("institution", options_for_select([['University hospital', 'University hospital'],
+                                                      ['Non-university hospital', 'Non-university hospital'],
+                                                      ["",""]]), :prompt => "Please select") %><br/>
     <%= label_tag "Meeting type" %>
     <%= select_tag("meeting_type", options_for_select([['Yes, I attend a dedicated ILD MDT meeting', 'Yes, I attend a dedicated ILD MDT meeting'],
-                                                  ['No, I do not attend/have access to a regular respiratory MDT meeting', 'No, I do not attend/have access to a regular respiratory MDT meeting'],
-                                                  ['Yes, I attend a general respiratory MDT meeting', 'Yes, I attend a general respiratory MDT meeting'], ["",""]]), :prompt => "Please select") %><br/>
+                                                       ['No, I do not attend/have access to a regular respiratory MDT meeting', 'No, I do not attend/have access to a regular respiratory MDT meeting'],
+                                                       ['Yes, I attend a general respiratory MDT meeting', 'Yes, I attend a general respiratory MDT meeting'], ["",""]]), :prompt => "Please select") %><br/>
     <%= label_tag "IPF/month" %>
     <%= select_tag("ipf_number_cases", options_for_select(@ipf), :prompt => "Please select") %><br/>
     <%= submit_tag("Search") %>
 <% end %>
-
 
 <hr/>
 

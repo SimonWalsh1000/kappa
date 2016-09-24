@@ -3,8 +3,7 @@ class Score < ActiveRecord::Base
 
   attr_accessor :countries
 
-
-
+  attr_accessor :experience_less
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
@@ -36,6 +35,16 @@ class Score < ActiveRecord::Base
 
   def name
     self.lname + " " + self.fname
+  end
+
+  def check_diagnoses(disease, threshold, case_number, name, exp)
+    unless self.dx2.nil? || self.dxcon2.nil?
+      if (self.dx1 == disease || self.dx2 == disease)
+        if (self.dxcon1 - self.dxcon2).abs < threshold
+          self.dx1 == disease ? Hash[[self.dx1, self.dx2, case_number, name, exp]=>[self.dxcon1, self.dxcon2, case_number, name, exp]] : Hash[[self.dx2, self.dx1,case_number, name, exp]=>[self.dxcon2, self.dxcon1, case_number, name, exp]]
+        end
+      end
+    end
   end
 
 

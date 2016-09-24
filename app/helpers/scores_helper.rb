@@ -1,10 +1,17 @@
 module ScoresHelper
 
 
-   def get_users(options = { experience_lower: nil, country: nil, meeting: nil, ipf_number: nil} )
+   def get_users(options = { institution: nil, experience_lower: nil, experience_upper: nil, country: nil, meeting: nil, ipf_number: nil} )
+
+    # use this query for analysis of experts only.
+    # query = Score.all.where(status: "true")
+
     query = Score.all
+
     if options[:experience_lower].present?
-      query = query.where("experience > ?", options[:experience_lower])
+      query = query.where("experience >= ?", options[:experience_lower])
+    elsif options[:experience_upper].present?
+      query = query.where("experience <=?", options[:experience_upper])
     end
     if options[:country].present?
       query = query.where(country: options[:country])
@@ -12,16 +19,21 @@ module ScoresHelper
     if options[:meeting].present?
       query = query.where(meeting_type: options[:meeting])
     end
+    if options[:institution].present?
+      query = query.where(institution: options[:institution])
+    end
     if options[:ipf_number].present?
       query = query.where( ipf_number_cases: options[:ipf_number])
     end
     query.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
     @query = query.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
-   end
+ end
 
 
 
   def kappa(rater1_id, rater2_id, disease)
+
+  score_number = 70
 
   # Get the observers
   @rater1 = Score.where(user_id: rater1_id).map { |r| r.attributes[disease] }
@@ -93,7 +105,11 @@ module ScoresHelper
 
   # calculate kappa
 
-  @kappa = (@sigma_agreements - @sigma_expected)/(60 - @sigma_expected)
+  # ipf
+  # @kappa = (@sigma_agreements - @sigma_expected)/(score_number - @sigma_expected)
+
+  # nodule
+  @kappa = (@sigma_agreements - @sigma_expected)/(score_number - @sigma_expected)
 
 
   # 1.0000   0.9375   0.7500   0.4375   0.0000
@@ -140,37 +156,37 @@ module ScoresHelper
 
 
   @c_0_0 = @ef0.round(3)
-  @c_0_1 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/60).round(3)
-  @c_0_2 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/60).round(3)
-  @c_0_3 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/60).round(3)
-  @c_0_4 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/60).round(3)
+  @c_0_1 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/score_number).round(3)
+  @c_0_2 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/score_number).round(3)
+  @c_0_3 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/score_number).round(3)
+  @c_0_4 = (((@array_0.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/score_number).round(3)
 
 
-  @c_1_0 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/60).round(3)
+  @c_1_0 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/score_number).round(3)
   @c_1_1 = @ef1.round(3)
-  @c_1_2 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/60).round(3)
-  @c_1_3 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/60).round(3)
-  @c_1_4 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/60).round(3)
+  @c_1_2 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/score_number).round(3)
+  @c_1_3 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/score_number).round(3)
+  @c_1_4 = (((@array_1.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/score_number).round(3)
 
 
-  @c_2_0 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/60).round(3)
-  @c_2_1 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/60).round(3)
+  @c_2_0 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/score_number).round(3)
+  @c_2_1 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/score_number).round(3)
   @c_2_2 = @ef2.round(3)
-  @c_2_3 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/60).round(3)
-  @c_2_4 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/60).round(3)
+  @c_2_3 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/score_number).round(3)
+  @c_2_4 = (((@array_2.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/score_number).round(3)
 
 
-  @c_3_0 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/60).round(3)
-  @c_3_1 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/60).round(3)
-  @c_3_2 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/60).round(3)
+  @c_3_0 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/score_number).round(3)
+  @c_3_1 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/score_number).round(3)
+  @c_3_2 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/score_number).round(3)
   @c_3_3 = @ef3.round(3)
-  @c_3_4 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/60).round(3)
+  @c_3_4 = (((@array_3.inject(0){|sum,x| sum + x }) * (@array_0[4] + @array_1[4] + @array_2[4] + @array_3[4] + @array_4[4])).to_f/score_number).round(3)
 
 
-  @c_4_0 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/60).round(3)
-  @c_4_1 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/60).round(3)
-  @c_4_2 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/60).round(3)
-  @c_4_3 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/60).round(3)
+  @c_4_0 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[0] + @array_1[0] + @array_2[0] + @array_3[0] + @array_4[0])).to_f/score_number).round(3)
+  @c_4_1 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[1] + @array_1[1] + @array_2[1] + @array_3[1] + @array_4[1])).to_f/score_number).round(3)
+  @c_4_2 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[2] + @array_1[2] + @array_2[2] + @array_3[2] + @array_4[2])).to_f/score_number).round(3)
+  @c_4_3 = (((@array_4.inject(0){|sum,x| sum + x }) * (@array_0[3] + @array_1[3] + @array_2[3] + @array_3[3] + @array_4[3])).to_f/score_number).round(3)
   @c_4_4 = @ef4.round(3)
 
   @w_expected = @c_0_0 * 1.0000 + @c_0_1 * 0.9375 + @c_0_2 * 0.7500 +  @c_0_3 * 0.4375 + @c_0_4 * 0.0000 +
@@ -193,7 +209,7 @@ module ScoresHelper
       @array_3W.inject(0){|sum,x| sum + x } +
       @array_4W.inject(0){|sum,x| sum + x }
 
-  @weighted_kappa = (@w_actual - @w_expected)/(60 - @w_expected)
+  @weighted_kappa = (@w_actual - @w_expected)/(score_number - @w_expected)
 
   end
 
@@ -207,11 +223,19 @@ module ScoresHelper
   end
 
   def median(hash)
-    array = hash.map {|k, v| v }
-    sorted = array.sort
-    len = sorted.length
-    (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+    if hash.present?
+      array = hash.map {|k, v| v }
+      sorted = array.sort
+      len = sorted.length
+      (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+    else
+      return
+    end
   end
 
+  def calculate_percentile(hash, percentile)
+   array = hash.map {|k, v| v }
+   array.sort[(percentile * array.length).ceil - 1]
+  end
 
 end
