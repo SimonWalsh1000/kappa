@@ -1,5 +1,6 @@
 class Score < ActiveRecord::Base
 
+  include ScoresHelper
 
   attr_accessor :countries
 
@@ -47,7 +48,34 @@ class Score < ActiveRecord::Base
     end
   end
 
+  def mgt_types
+    if self.mgt == "Observation"
+      return "0"
+    elsif self.mgt == "Immunomodulation"
+      return "1"
+    elsif self.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone) assuming the patient satisfies local prescribing criteria."
+      return "2"
+    elsif self.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone - one or both are available)"
+      return "2"
+    elsif self.mgt == "IPF-specific therapy, (i.e. Nintedanib, Pirfenidone), if it were available in my country"
+      return "2"
+    elsif self.mgt == "Other (e.g GM-CSF for alveolar proteinosis. Please specify in the comments)"
+      return "3"
+    end
+  end
 
-  
-  
-end
+  def self.to_management_csv(options = {})
+    CSV.generate(options) do |csv|
+      column_names = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
+      csv << column_names
+      i = 0
+      60.times do
+        i = i + 1
+        row = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.mgt_types }
+        csv << row
+      end
+    end
+  end
+
+
+  end

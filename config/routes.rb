@@ -12,7 +12,8 @@ Rails.application.routes.draw do
       post :search
       post :test
       get :discrepancy
-
+      get :export
+      get :management
     end
   end
 

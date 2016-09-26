@@ -33,7 +33,7 @@ module ScoresHelper
 
   def kappa(rater1_id, rater2_id, disease)
 
-  score_number = 70
+  score_number = 60
 
   # Get the observers
   @rater1 = Score.where(user_id: rater1_id).map { |r| r.attributes[disease] }
@@ -237,5 +237,37 @@ module ScoresHelper
    array = hash.map {|k, v| v }
    array.sort[(percentile * array.length).ceil - 1]
   end
+
+  def mgt_types(string)
+   if string == "Observation"
+    return "0"
+   elsif string == "Immunomodulation"
+    return "1"
+   elsif string == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone) assuming the patient satisfies local prescribing criteria"
+    return "2"
+   elsif string == "IPF-specific therapy, (i.e. Nintedanib, Pirfenidone), if it were available in my country"
+    return "2"
+   elsif string == "Other (e.g GM-CSF for alveolar proteinosis. Please specify in the comments)"
+    return "3"
+   end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 end

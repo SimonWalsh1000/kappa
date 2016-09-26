@@ -32,7 +32,7 @@ class ScoresController < ApplicationController
           @ipf = (0..2).to_a.map(&:to_s) << "All" << "Deselect"
           @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
           @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
-          @kappas = get_kappas(@query, "hp")
+          @kappas = get_kappas(@query, "ipf")
     else
       @score_count = Score.count
       @score = Score.new
@@ -50,7 +50,7 @@ class ScoresController < ApplicationController
     @ipf = (0..2).to_a.map(&:to_s) << ""
     @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
     @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
-    @kappas = get_kappas(@query, "hp")
+    @kappas = get_kappas(@query, "ipf")
     render 'multiple_kappas'
   end
 
@@ -68,6 +68,19 @@ class ScoresController < ApplicationController
 
   def discrepancy
     @scores = Score.all.map { |score| score.check_diagnoses("Idiopathic pulmonary fibrosis", 20, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
+  end
+
+  def export
+    @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
+  end
+
+  def management
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_management_csv }
+      format.xls
+    end
   end
 
   # GET /scores/1
@@ -142,14 +155,7 @@ class ScoresController < ApplicationController
     redirect_to analysis_scores_path, notice: "Scores imported."
   end
 
-  def excel
-    @scores = Score.order(:id)
-    respond_to do |format|
-      format.html
-      format.csv { send_data @scores.to_csv }
-      format.xls # { send_data @products.to_csv(col_sep: "\t") }
-    end
-  end
+
 
 
   private
