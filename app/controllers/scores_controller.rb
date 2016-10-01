@@ -14,6 +14,7 @@ class ScoresController < ApplicationController
     @score_count = Score.count
     @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
     kappa(6, 8, "ipf")
+    refactor_kappa(6, 8, "ipf")
     @rater1_id = 6
     @rater2_id = 8
   end
@@ -32,7 +33,7 @@ class ScoresController < ApplicationController
           @ipf = (0..2).to_a.map(&:to_s) << "All" << "Deselect"
           @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
           @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
-          @kappas = get_kappas(@query, "ipf")
+          @kappas = get_kappas(@query, "ctd")
     else
       @score_count = Score.count
       @score = Score.new
@@ -72,6 +73,7 @@ class ScoresController < ApplicationController
 
   def export
     @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
+    @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
   end
 
   def management
