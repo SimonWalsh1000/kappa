@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160917164738) do
+ActiveRecord::Schema.define(version: 20161123160919) do
+
+  create_table "clinicians", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "country"
+    t.string   "society"
+    t.string   "general"
+    t.string   "specialty"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "scores", force: :cascade do |t|
     t.integer  "case_id"
@@ -56,6 +67,49 @@ ActiveRecord::Schema.define(version: 20160917164738) do
     t.integer  "reversiblebehaviour"
     t.string   "mgt"
     t.string   "comment"
+    t.string   "continent"
+    t.integer  "strata"
+    t.integer  "cat"
+    t.string   "email"
+  end
+
+  create_table "survivals", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.float    "b"
+    t.float    "se"
+    t.float    "hr"
+    t.float    "ci_lower"
+    t.float    "ci_upper"
+    t.float    "p"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "job_description"
+    t.integer  "experience"
+    t.string   "institution"
+    t.string   "institution_type"
+    t.string   "ipf_approach"
+    t.string   "meeting"
+    t.string   "imaging"
+    t.string   "histopathology"
+    t.string   "fellowship"
+    t.string   "mdt_frequency"
+    t.string   "country"
+    t.string   "ipfphys"
+    t.string   "email"
+    t.string   "cryobiopsy"
+    t.boolean  "complete"
+    t.boolean  "finished"
+    t.integer  "finish"
+    t.boolean  "author"
+    t.boolean  "ats"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
 end

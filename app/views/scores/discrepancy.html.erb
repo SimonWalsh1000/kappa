@@ -2,6 +2,8 @@
 
 <div class = "row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+    <%=  @scores.count.to_f/Score.expert.count.to_f %>
     <h3>Close calls...<%= @scores.count %></h3>
     <table class="table table-bordered">
       <thead>

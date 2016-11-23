@@ -53,6 +53,10 @@
 
   <hr/>
 
+    <h4>Query:<br/></h4>
+    <%= @query %><br/>
+    <%= @query.count %>
+
   <h4>Expected number of Kappas:<br/></h4>
   <%= ((@query.count) * ((@query.count) - 1 ))/2 %>
 

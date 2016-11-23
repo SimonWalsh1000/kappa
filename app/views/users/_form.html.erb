@@ -1,0 +1,31 @@
+<%= simple_form_for(@user) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :first_name %>
+    <%= f.input :last_name %>
+    <%= f.input :job_description %>
+    <%= f.input :experience %>
+    <%= f.input :institution %>
+    <%= f.input :institution_type %>
+    <%= f.input :ipf_approach %>
+    <%= f.input :meeting %>
+    <%= f.input :imaging %>
+    <%= f.input :histopathology %>
+    <%= f.input :fellowship %>
+    <%= f.input :mdt_frequency %>
+    <%= f.input :country %>
+    <%= f.input :ipfphys %>
+    <%= f.input :email %>
+    <%= f.input :cryobiopsy %>
+    <%= f.input :complete %>
+    <%= f.input :finished %>
+    <%= f.input :finish %>
+    <%= f.input :author %>
+    <%= f.input :ats %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

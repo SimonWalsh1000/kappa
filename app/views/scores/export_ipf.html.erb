@@ -1,0 +1,32 @@
+<h2>Download IPF category<br/><small></small></h2>
+<%= @kappa_statement %>
+<hr/>
+<%= @variables %>
+<hr/>
+<p>
+  Download file:
+  <%= link_to "CSV", ipf_scores_path(format: "csv") %>
+</p>
+
+
+<div class = "row">
+  <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-sm-12 col-xs-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: left">actual</th>
+        <th style = "text-align: center">test</th>
+
+
+      </tr>
+      </thead>
+      <%@test.each do |g|%>
+          <tr>
+            <td style = "width:120px; font-size:0.8em; text-align: left"><%= g.dx1 %></td>
+            <td style = "width:120px; text-align: center"><%= g.ipf_cat %></td>
+
+          </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,1 @@
+json.array! @survivals, partial: 'survivals/survival', as: :survival

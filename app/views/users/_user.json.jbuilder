@@ -1,0 +1,2 @@
+json.extract! user, :id, :first_name, :last_name, :job_description, :experience, :institution, :institution_type, :ipf_approach, :meeting, :imaging, :histopathology, :fellowship, :mdt_frequency, :country, :ipfphys, :email, :cryobiopsy, :complete, :finished, :finish, :author, :ats, :created_at, :updated_at
+json.url user_url(user, format: :json)

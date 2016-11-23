@@ -1,0 +1,7 @@
+<h2>Import users</h2>
+
+<%= form_tag import_users_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "Import", :class => "btn btn-success", :style => "margin-top:20px;" %>
+<% end %>
+

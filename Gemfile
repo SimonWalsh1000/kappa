@@ -13,10 +13,10 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'roo'
 gem 'bootstrap-sass', '~> 3.3.6'
-gem 'roo'
 gem 'annotate'
 gem 'roo-xls'
 gem 'simple_form'
+gem 'bootstrap-sass', '~> 3.3.6'
 
 
 group :development, :test do

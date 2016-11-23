@@ -1,0 +1,184 @@
+<!--scope :finished, -> { where(finished: true)}-->
+
+<!--scope :expert, -> { where(author: true)}-->
+
+<!--scope :lazy, -> { where(finish: 0) }-->
+
+<!--scope :active, -> { where(finish: 1...60) }-->
+
+<!--scope :lazy_active, -> { where(finish: 0...60) }-->
+
+<!--scope :author, -> { where(author: true) }-->
+
+<!--scope :not_author, -> { where(author: false) }-->
+
+<!--scope :collaborator, -> { where(author: false, finish: 1..60) }-->
+
+<!--scope :abstract, -> { where(ats: true) }-->
+
+<!--scope :imaging, -> { where(imaging: "Yes") }-->
+
+<!--scope :histopathology, -> { where(histopathology: "Yes") }-->
+
+<!--scope :fellowship, -> { where(fellowship: "Yes") }-->
+
+<!--scope :no_imaging, -> { where(imaging: "No") }-->
+
+<!--scope :no_histopathology, -> { where(histopathology: "No") }-->
+
+<!--scope :indirect_imaging, -> { where(imaging: "Not directly, but in my network") }-->
+
+<!--scope :indirect_histopathology, -> { where(histopathology: "Not directly, but in my network") }-->
+
+<!--scope :no_fellowship, -> { where(fellowship: "No") }-->
+
+<!--scope :ild_mdt, -> { where(meeting: "Yes, I attend a dedicated ILD MDT meeting")}-->
+
+<!--scope :gen_mdt, -> { where(meeting: "Yes, I attend a general respiratory MDT meeting")}-->
+
+<!--scope :no_mdt, -> { where(meeting: "No, I do not attend/have access to a regular respiratory MDT meeting")}-->
+
+<!--scope :refer, -> { where(ipf_number_cases: "0")}-->
+
+<!--scope :ipf_one, -> { where(ipf_number_cases: "1..10")}-->
+
+<!--scope :ipf_two, -> { where(ipf_number_cases: "11..20")}-->
+
+<!--scope :ipf_three, -> { where(ipf_number_cases: "20+")}-->
+
+<!--scope :university, -> { where(institution_type: "University hospital")}-->
+
+<!--scope :non_university, -> { where(institution_type: "Non-university hospital")}-->
+
+<!--scope :cryobiopsy, -> { where(cryobiopsy: "Yes")}-->
+
+<!--scope :no_cryobiopsy, -> { where(cryobiopsy: "No")}-->
+
+
+
+<h2><%= User.count %> participants</h2>
+(Remove Hansell and test user)
+<hr/>
+
+
+
+<%= User.finished.refer.count %>
+
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>Completed<br/> (n=<%= User.finished.count %>)</td>
+        <th>Didn't complete<br/> (n=<%= User.not_finished.count %>)</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>Clinician <br/>type</th>
+        <td>Expert<br/> panel</td>
+        <td><%= User.expert.finished.count %></td>
+        <td><%= User.expert.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Not<br/>  expert panel</td>
+        <td><%= User.novice.finished.count %></td>
+        <td><%= User.novice.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>MDT<br/> Type</th>
+        <td>ILD <br/>MDT</td>
+        <td><%= User.ild_mdt.finished.count %></td>
+        <td><%= User.ild_mdt.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>General <br/>respiratory MDT</td>
+        <td><%= User.gen_mdt.finished.count %></td>
+        <td><%= User.gen_mdt.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>No <br/>MDT</td>
+        <td><%= User.no_mdt.finished.count %></td>
+        <td><%= User.no_mdt.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>Institution <br/>type</th>
+        <td>University <br/>Hospital</td>
+        <td><%= User.university.finished.count %></td>
+        <td><%= User.university.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Community<br/> Hospital</td>
+        <td><%= User.non_university.finished.count %></td>
+        <td><%= User.non_university.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>How many cases of IPF do <br/>you diagnose per month?</th>
+        <td>None. We refer all <br/> suspected cases</td>
+        <td><%= User.refer.finished.count %></td>
+        <td><%= User.refer.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>IPF/month<br/> = 1-10</td>
+        <td><%= User.ipf_one.finished.count %></td>
+        <td><%= User.ipf_one.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>IPF/month<br/> = 11-20</td>
+        <td><%= User.ipf_two.finished.count %></td>
+        <td><%= User.ipf_two.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>IPF/month<br/> = 20+ </td>
+        <td><%= User.ipf_three.finished.count %></td>
+        <td><%= User.ipf_three.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>Do you have access to specialist <br/>thoracic radiology expertise?</th>
+        <td>No</td>
+        <td><%= User.no_imaging.finished.count %></td>
+        <td><%= User.no_imaging.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Not directly but<br/> in my network</td>
+        <td><%= User.indirect_imaging.finished.count %></td>
+        <td><%= User.indirect_imaging.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Yes<br/> direct access</td>
+        <td><%= User.imaging.finished.count %></td>
+        <td><%= User.imaging.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>Do you have access to specialist <br/>thoracic pathology expertise?</th>
+        <td>No</td>
+        <td><%= User.no_histopathology.finished.count %></td>
+        <td><%= User.no_histopathology.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Not directly but<br/> in my network</td>
+        <td><%= User.indirect_histopathology.finished.count %></td>
+        <td><%= User.indirect_histopathology.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Yes<br/> direct access</td>
+        <td><%= User.histopathology.finished.count %></td>
+        <td><%= User.histopathology.not_finished.count %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

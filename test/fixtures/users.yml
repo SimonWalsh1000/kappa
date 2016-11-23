@@ -1,0 +1,47 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  first_name: MyString
+  last_name: MyString
+  job_description: MyString
+  experience: 1
+  institution: MyString
+  institution_type: MyString
+  ipf_approach: MyString
+  meeting: MyString
+  imaging: MyString
+  histopathology: MyString
+  fellowship: MyString
+  mdt_frequency: MyString
+  country: MyString
+  ipfphys: MyString
+  email: MyString
+  cryobiopsy: MyString
+  complete: false
+  finished: false
+  finish: 1
+  author: false
+  ats: false
+
+two:
+  first_name: MyString
+  last_name: MyString
+  job_description: MyString
+  experience: 1
+  institution: MyString
+  institution_type: MyString
+  ipf_approach: MyString
+  meeting: MyString
+  imaging: MyString
+  histopathology: MyString
+  fellowship: MyString
+  mdt_frequency: MyString
+  country: MyString
+  ipfphys: MyString
+  email: MyString
+  cryobiopsy: MyString
+  complete: false
+  finished: false
+  finish: 1
+  author: false
+  ats: false

@@ -1,0 +1,43 @@
+
+
+<div class = "row">
+  <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-sm-12 col-xs-12">
+    <h3>wKappa's by experience</h3>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: left">Range</th>
+        <th style = "text-align: center">Over</th>
+        <th style = "text-align: center">Under/equal</th>
+
+      </tr>
+      </thead>
+
+          <tr>
+            <td style = "width:120px; text-align: center">10</td>
+            <td style = "width:120px; text-align: center"><%= median(@kappas_over_20).round(4) %> IQR[<%= calculate_percentile(@kappas_over_20, 0.25).round(4) %>-<%= calculate_percentile(@kappas_over_20, 0.75).round(4) %>]</td>
+            <td style = "width:120px; text-align: center"><%= median(@kappas_less_than_equal_to_20).round(4) %> IQR[<%= calculate_percentile(@kappas_less_than_equal_to_20, 0.25).round(4) %>-<%= calculate_percentile(@kappas_less_than_equal_to_20, 0.75).round(4) %>]</td>
+          </tr>
+          <!--<tr>-->
+            <!--<td style = "width:120px; text-align: center">15</td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_over_15 %></td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_less_than_equal_to_15 %></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td style = "width:120px; text-align: center">20</td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_over_20 %></td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_less_than_equal_to_20 %></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td style = "width:120px; text-align: center">25</td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_over_25 %></td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_less_than_equal_to_25 %></td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td style = "width:120px; text-align: center">30</td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_over_30 %></td>-->
+            <!--<td style = "width:120px; text-align: center"><%= @kappas_less_than_equal_to_30 %></td>-->
+          <!--</tr>-->
+    </table>
+  </div>
+</div>

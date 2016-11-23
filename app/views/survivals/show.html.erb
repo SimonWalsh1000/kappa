@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @survival.user_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @survival.name %>
+</p>
+
+<p>
+  <strong>B:</strong>
+  <%= @survival.b %>
+</p>
+
+<p>
+  <strong>Se:</strong>
+  <%= @survival.se %>
+</p>
+
+<p>
+  <strong>Hr:</strong>
+  <%= @survival.hr %>
+</p>
+
+<p>
+  <strong>Ci lower:</strong>
+  <%= @survival.ci_lower %>
+</p>
+
+<p>
+  <strong>Ci upper:</strong>
+  <%= @survival.ci_upper %>
+</p>
+
+<p>
+  <strong>P:</strong>
+  <%= @survival.p %>
+</p>
+
+<%= link_to 'Edit', edit_survival_path(@survival) %> |
+<%= link_to 'Back', survivals_path %>

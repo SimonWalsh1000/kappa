@@ -1,6 +1,32 @@
 Rails.application.routes.draw do
+
+  resources :users do
+    collection do
+      get :data
+      get :upload
+      post :import
+    end
+  end
+
+  resources :clinicians do
+    collection do
+      get :upload
+      post :import
+      get :breakdown
+    end
+  end
+
+  resources :survivals do
+    collection do
+      get :results
+      get :upload
+      post :import
+    end
+  end
+
   resources :scores do
     collection do
+      get :authors
       get :countries_kappa
       get :nuclear
       get :upload
@@ -13,7 +39,12 @@ Rails.application.routes.draw do
       post :test
       get :discrepancy
       get :export
+      get :export_ipf
+      get :ipf
+      get :export_diagnosis
+      get :diagnosis
       get :management
+      get :experience
     end
   end
 

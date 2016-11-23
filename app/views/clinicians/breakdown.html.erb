@@ -1,0 +1,67 @@
+
+<p id="notice"><%= notice %></p>
+<h2><%= Clinician.count %> emails</h2>
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Stratify</th>
+        <th>Number of novice finishers</th>
+        <th>Number of expert finishers</th>
+        <th>Number of finishers with personal invites</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+           <td>All</td>
+           <td><%= @scorers.uniq.count %></td>
+           <td><%=  @experts.uniq.count %></td>
+           <td><%= @invited_clinicians.count %>/<%= @participants.count %></td>
+        </tr>
+        <tr>
+          <td>ILD</td>
+          <td><%= @ild_novices.count %> (<%= (@ild_novices.count.to_f * 100/@scorers.uniq.count.to_f).round(0) %>%)</td>
+          <td><%= @experts.uniq.count %></td>
+          <td><%= @ild_invited_novices.count %>/<%= @invited_clinicians.count %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--<div class = "row">-->
+  <!--<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">-->
+    <!--<table class="table table-bordered">-->
+      <!--<thead>-->
+      <!--<tr>-->
+        <!--<th>ILD</th>-->
+      <!--</tr>-->
+      <!--</thead>-->
+      <!--<tbody>-->
+      <!--<% @ild_novices.each do |i| %>-->
+          <!--<tr>-->
+            <!--<td><%= i %></td>-->
+          <!--</tr>-->
+      <!--<% end %>-->
+      <!--</tbody>-->
+    <!--</table>-->
+  <!--</div>-->
+
+  <!--<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">-->
+    <!--<table class="table table-bordered">-->
+      <!--<thead>-->
+      <!--<tr>-->
+        <!--<th>Not ILD</th>-->
+      <!--</tr>-->
+      <!--</thead>-->
+      <!--<tbody>-->
+      <!--<% @not_ild_novices.each do |i| %>-->
+          <!--<tr>-->
+            <!--<td><%= i %></td>-->
+          <!--</tr>-->
+      <!--<% end %>-->
+      <!--</tbody>-->
+    <!--</table>-->
+  <!--</div>-->
+<!--</div>-->

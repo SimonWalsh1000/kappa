@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h2>Listing authors</h2>
+
+
+
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Number</th>
+        <th>User</th>
+        <th>Name</th>
+        <th>Country</th>
+        <th>IPF no.</th>
+        <th>Hr</th>
+        <th>P</th>
+        <th>Ci lower</th>
+        <th>Ci upper</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% i = 0 %>
+      <% @survivals.each do |survival| %>
+          <% i = i + 1 %>
+          <tr>
+            <td><%= i %></td>
+            <td><%= survival.user_id %></td>
+            <td><%= survival.name %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.country %></td>
+            <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.hr.round(4) %></td>
+            <td><%= survival.p.round(4) %></td>
+            <td><%= survival.ci_lower.round(4) %></td>
+            <td><%= survival.ci_upper.round(4) %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

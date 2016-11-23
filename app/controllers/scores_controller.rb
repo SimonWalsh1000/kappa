@@ -7,16 +7,47 @@ class ScoresController < ApplicationController
   # GET /scores
   # GET /scores.json
   def index
-    @scores = Score.all
+
+    @hash = Hash.new
+    Score.all.map(&:country).each do |c|
+      result = ((Score.where("dx1 = ? and dxcon1 > ? and country = ? ", "Idiopathic pulmonary fibrosis", 70 , c).count) * (100) / (Score.where("dx1 = ? and  country = ? ", "Idiopathic pulmonary fibrosis", c).count))
+      @hash[c] = [result, (Score.where("dx1 = ? and country = ? ", "Idiopathic pulmonary fibrosis", c).count)]
+    end
   end
 
   def analysis
     @score_count = Score.count
     @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
     kappa(6, 8, "ipf")
-    refactor_kappa(6, 8, "ipf")
     @rater1_id = 6
     @rater2_id = 8
+  end
+
+  def experience
+    # @query_over_5 = get_users(options = { experience_lower: 6 } )
+    # @query_less_than_equal_to_5 = get_users(options = { experience_upper: 5} )
+    # @query_over_10 = get_users(options = { experience_lower: 11 } )
+    # @query_less_than_equal_to_10 = get_users(options = { experience_upper: 10} )
+    # @query_over_15 = get_users(options = { experience_lower: 16 } )
+    # @query_less_than_equal_to_15 = get_users(options = { experience_upper: 15} )
+    @query_over_20 = get_users(options = { experience_lower: 21 } )
+    @query_less_than_equal_to_20 = get_users(options = { experience_upper: 20} )
+    # @query_over_25 = get_users(options = { experience_lower: 26 } )
+    # @query_less_than_equal_to_25 = get_users(options = { experience_upper: 25} )
+    # @query_over_30 = get_users(options = { experience_lower: 31 } )
+    # @query_less_than_equal_to_30 = get_users(options = { experience_upper: 30} )
+    # @kappas_over_5 = get_kappas(@query_over_5, "ipf")
+    # @kappas_less_than_equal_to_5 = get_kappas(@query_less_than_equal_to_5, "ipf")
+    # @kappas_over_10 = get_kappas(@query_over_10, "ipf")
+    # @kappas_less_than_equal_to_10 = get_kappas(@query_less_than_equal_to_10, "ipf")
+    # @kappas_over_15 = get_kappas(@query_over_15, "ipf")
+    # @kappas_less_than_equal_to_15 = get_kappas(@query_less_than_equal_to_15, "ipf")
+    @kappas_over_20 = get_kappas(@query_over_20, "ipf")
+    @kappas_less_than_equal_to_20 = get_kappas(@query_less_than_equal_to_20, "ipf")
+    # @kappas_over_25 = get_kappas(@query_over_25, "ipf")
+    # @kappas_less_than_equal_to_25 = get_kappas(@query_less_than_equal_to_25, "ipf")
+    # @kappas_over_30 = get_kappas(@query_over_30, "ipf")
+    # @kappas_less_than_equal_to_30 = get_kappas(@query_less_than_equal_to_30, "ipf")
   end
 
   def multiple_kappas
@@ -33,7 +64,7 @@ class ScoresController < ApplicationController
           @ipf = (0..2).to_a.map(&:to_s) << "All" << "Deselect"
           @query = get_users(options = { institution: params[:institution], experience_lower: params[:experience], experience_upper: params[:experience_less], country: params[:countries], meeting: params[:meeting_type], ipf_number: params[:ipf_number_cases]} )
           @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
-          @kappas = get_kappas(@query, "ctd")
+          @kappas = get_kappas(@query, "ipf")
     else
       @score_count = Score.count
       @score = Score.new
@@ -68,12 +99,22 @@ class ScoresController < ApplicationController
    end
 
   def discrepancy
-    @scores = Score.all.map { |score| score.check_diagnoses("Idiopathic pulmonary fibrosis", 20, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
+    # @scores = Score.all.map { |score| score.check_diagnoses("Idiopathic pulmonary fibrosis", 20, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
+    @scores = Score.expert.all.map { |score| score.check_diagnoses_generic(15, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
   end
+
+
 
   def export
     @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
     @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
+  end
+
+  def export_ipf
+    @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
+    @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
+    @test = Score.where(fname: "Morais")
+
   end
 
   def management
@@ -83,6 +124,31 @@ class ScoresController < ApplicationController
       format.csv { send_data @scores.to_management_csv }
       format.xls
     end
+  end
+
+  def ipf
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_ipf_csv }
+      format.xls
+    end
+  end
+
+  def diagnosis
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_diagnosis_csv }
+      format.xls
+    end
+  end
+
+  def export_diagnosis
+    @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
+    @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
+    @test = Score.where(fname: "Wilsher")
+
   end
 
   # GET /scores/1
@@ -157,7 +223,9 @@ class ScoresController < ApplicationController
     redirect_to analysis_scores_path, notice: "Scores imported."
   end
 
+  def authors
 
+  end
 
 
   private

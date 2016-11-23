@@ -1,0 +1,1 @@
+json.partial! "survivals/survival", survival: @survival

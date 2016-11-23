@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  name: MyString
+  b: 1.5
+  se: 1.5
+  hr: 1.5
+  ci_lower: 1.5
+  ci_upper: 1.5
+  p: 1.5
+
+two:
+  user_id: 1
+  name: MyString
+  b: 1.5
+  se: 1.5
+  hr: 1.5
+  ci_lower: 1.5
+  ci_upper: 1.5
+  p: 1.5

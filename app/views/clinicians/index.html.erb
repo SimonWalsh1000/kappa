@@ -1,0 +1,29 @@
+
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th width = "10%">Email</th>
+          <th width = "10%">Country</th>
+          <th width = "10%">Society</th>
+          <th width = "15%">General</th>
+          <th width = "15%">Specialty</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @clinicians.each do |clinician| %>
+          <tr>
+            <td><%= clinician.email %></td>
+            <td><%= clinician.country %></td>
+            <td><%= clinician.society %></td>
+            <td><%= clinician.general %></td>
+            <td><%= clinician.specialty %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
