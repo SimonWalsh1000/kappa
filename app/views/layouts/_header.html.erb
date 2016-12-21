@@ -19,7 +19,10 @@
             <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to "Kappas", multiple_kappas_scores_path %></li>
+            <li><%= link_to "Kappas IPF,CTD,NSIP,HP", all_kappas_scores_path %></li>
             <li><%= link_to "Countries", countries_kappa_scores_path %></li>
+            <li><%= link_to "Countries demo", countries_demo_scores_path %></li>
+            <li><%= link_to "Breakdown", completed_breakdown_scores_path%></li>
             <li><%= link_to "Discrepancies", discrepancy_scores_path %></li>
             <li><%= link_to "Experience", experience_scores_path %></li>
             <li><%= link_to "Import", upload_scores_path %></li>
@@ -28,12 +31,16 @@
             <li><%= link_to "Dx cat", export_diagnosis_scores_path %></li>
             <li><%= link_to "All Survival", survivals_path %></li>
             <li><%= link_to "Specific Survival", results_survivals_path %></li>
+            <li><%= link_to "Results", results_breakdown_survivals_path %></li>
             <li><%= link_to "Import Survival", upload_survivals_path %></li>
             <li><%= link_to "Clinician Breakdown", breakdown_clinicians_path %></li>
             <li><%= link_to "Upload users", upload_users_path %></li>
           </ul>
         </li>
         <li><%= link_to "User data", data_users_path %></li>
+        <li><%= link_to "User by country data", countries_demo_scores_path %></li>
+        <li><%= link_to "User by country kappa", countries_kappa_scores_path %></li>
+        <li><%= link_to "Uni vs Non uni", university_users_path %></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

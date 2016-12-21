@@ -2,11 +2,11 @@ module ScoresHelper
 
 
    def get_users(options = { institution: nil, experience_lower: nil, experience_upper: nil, country: nil, meeting: nil, ipf_number: nil} )
-
     # use this query for analysis of experts only.
-    #query = Score.all.where(status: "false")
-
-    query = Score.all
+    # query = Score.some_mdt.very_frequent_mdt
+    # query = Score.all.where(status: "true")
+    # use this query for analysis of experts only.
+     query = Score.all
 
     if options[:experience_lower].present?
       query = query.where("experience >= ?", options[:experience_lower])
@@ -241,6 +241,25 @@ module ScoresHelper
     end
   end
 
+
+   def median_and_ci(hash)
+     if hash.present?
+       if  hash.class == Hash
+         @array = hash.map {|k, v| v }
+       elsif hash.class == Array
+         @array = hash
+       end
+       sorted = @array.sort
+       len = sorted.length
+       @median = ((sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0).round(2)
+       @lwr_ci = calculate_percentile(hash, 0.25).round(2)
+       @uppr_ci = calculate_percentile(hash, 0.75).round(2)
+       [@median, @lwr_ci, @uppr_ci]
+     else
+       return
+     end
+   end
+
   def calculate_percentile(hash, percentile)
     if  hash.class == Hash
       @array = hash.map {|k, v| v }
@@ -264,22 +283,12 @@ module ScoresHelper
    end
   end
 
+  def fp var
+    "(" + (((var.to_f * 100)/FINISHED).round(1)).to_s + "%)"
+  end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  def not_fp var
+    "(" + (((var.to_f * 100)/NOT_FINISHED).round(1)).to_s + "%)"
+  end
 
 end

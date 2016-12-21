@@ -7,12 +7,14 @@ class ScoresController < ApplicationController
   # GET /scores
   # GET /scores.json
   def index
-
     @hash = Hash.new
     Score.all.map(&:country).each do |c|
       result = ((Score.where("dx1 = ? and dxcon1 > ? and country = ? ", "Idiopathic pulmonary fibrosis", 70 , c).count) * (100) / (Score.where("dx1 = ? and  country = ? ", "Idiopathic pulmonary fibrosis", c).count))
       @hash[c] = [result, (Score.where("dx1 = ? and country = ? ", "Idiopathic pulmonary fibrosis", c).count)]
     end
+  end
+
+  def completed_breakdown
   end
 
   def analysis
@@ -74,6 +76,15 @@ class ScoresController < ApplicationController
     end
   end
 
+  def all_kappas
+    @query = get_users(options = {})
+    @names = @query.map { |s| Score.where(user_id: s).first.name.titleize }
+    @kappas_ipf = get_kappas(@query, "ipf")
+    @kappas_ctd = get_kappas(@query, "ctd")
+    @kappas_nsip = get_kappas(@query, "nsip")
+    @kappas_hp = get_kappas(@query, "hp")
+  end
+
   def test
     @score_count = Score.count
     @score = Score.new
@@ -87,20 +98,33 @@ class ScoresController < ApplicationController
   end
 
    def countries_kappa
-     @kappas = Hash.new
-     @countries = Score.group(:country).count.map { |k, v| k }
-     @countries.each do |c|
+    @kappas = Hash.new
+    @countries = Score.group(:country).count.map { |k, v| k }
+    @countries.each do |c|
       next if median(get_kappas(get_users(options = { country: c}), "ipf")).blank?
-        user_count_for_country = Score.where(country: c).count/60
-        experience_count_for_country = Score.where(country: c).map {|s| s.experience }.uniq.sum/user_count_for_country
-        @kappas[c] = [user_count_for_country, experience_count_for_country, median(get_kappas(get_users(options = { country: c}), "ipf"))]
-     end
-      @kappas
+      user_count_for_country = Score.where(country: c).count/60
+      experience_count_for_country = Score.where(country: c).map {|s| s.experience }.uniq.sum/user_count_for_country
+      @kappas[c] = [user_count_for_country, experience_count_for_country, median_and_ci(get_kappas(get_users(options = { country: c}), "ipf"))]
+    end
+    @kappas
    end
+
+  def countries_demo
+    @countries = Score.all.map(&:country).uniq
+    @demographics = Hash.new
+    @countries.each do |c|
+      user_count_for_country = Score.where(country: c).count/60
+      mdt_array = [Score.where(country: c).ild_mdt.count/60, Score.where(country: c).gen_mdt.count/60, Score.where(country: c).no_mdt.count/60]
+      experts = [Score.where(country: c).expert.count/60, Score.where(country: c).novice.count/60]
+      uni = [Score.where(country: c).university.count/60, Score.where(country: c).non_university.count/60]
+      @demographics[c] = [user_count_for_country, mdt_array, experts, uni]
+    end
+    @demographics.sort_by{ |a,b| b[0]}
+  end
 
   def discrepancy
     # @scores = Score.all.map { |score| score.check_diagnoses("Idiopathic pulmonary fibrosis", 20, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
-    @scores = Score.expert.all.map { |score| score.check_diagnoses_generic(15, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][1]}
+    @scores = Score.expert.all.map { |score| score.check_diagnoses_generic(15, score.case_id, score.name, score.experience)}.compact.sort_by { |k| k.keys[0][2]}
   end
 
 
@@ -113,8 +137,15 @@ class ScoresController < ApplicationController
   def export_ipf
     @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
     @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
-    @test = Score.where(fname: "Morais")
+    @test = Score.where(lname: "Rokadia")
 
+  end
+
+  def export_adjusted_ipf
+    @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
+    @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
+    @test = Score.where(lname: "Rokadia")
+    @adjusted_scores = Score.all.select { |s| s.dx2 == "Idiopathic pulmonary fibrosis" && s.dxcon1 == 50 && s.dxcon2 == 50  && (s.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone) assuming the patient satisfies local prescribing criteria." || s.mgt == "IPF-specific therapy, (i.e. Nintedanib, Pirfenidone), if it were available in my country" || s.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone - one or both are available)" )}
   end
 
   def management
@@ -135,6 +166,15 @@ class ScoresController < ApplicationController
     end
   end
 
+  def ipf_adjusted
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_adjusted_ipf_csv }
+      format.xls
+    end
+  end
+
   def diagnosis
     @scores = Score.order(:id)
     respond_to do |format|
@@ -147,7 +187,7 @@ class ScoresController < ApplicationController
   def export_diagnosis
     @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
     @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
-    @test = Score.where(fname: "Wilsher")
+    @test = Score.where(lname: "Wilsher")
 
   end
 

@@ -57,12 +57,24 @@
 
 
 <h2><%= User.count %> participants</h2>
-(Remove Hansell and test user)
+
+<h2>Remember: you need to do the comparisons analysis for these - best do it straight from excel</h2>
+
+<h3>Points to check:</h3>
+<ol>
+  <li>Anna	Dubaniewicz
+    Aileen	Wang
+    Giovanni	Galluccio
+    Talat	Kilic ALL HAVE MISSING DATA
+  </li>
+  <li>Remove duplicates - there are a couple of duplicate participants</li>
+  <li>Check Hansell and test user are deleted</li>
+  <li>Remove invalid cryobiopsy</li>
+</ol>
+
 <hr/>
 
-
-
-<%= User.finished.refer.count %>
+<% if User.count > 1 %>
 
 <div class = "row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -89,96 +101,153 @@
         <td><%= User.novice.not_finished.count %></td>
       </tr>
       <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.novice.finished.count + User.expert.finished.count %></td>
+        <td><%= User.novice.not_finished.count + User.expert.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>Years <br/>experience</th>
+        <td></td>
+        <td><%= ((User.finished.map(&:experience).sum.to_f)/ User.finished.count.to_f).round(3) %></td>
+        <td><%= ((User.not_finished.map(&:experience).sum.to_f)/ User.not_finished.count.to_f).round(3) %></td>
+      </tr>
+      <tr>
+        <th>Fellowship <br/>training</th>
+        <td></td>
+        <td><%= User.finished.fellowship.count %>/<%= User.finished.training_fellowship.count %>/<%= User.finished.no_fellowship.count %></td>
+        <td><%= User.not_finished.fellowship.count %>/<%= User.not_finished.training_fellowship.count %>/<%= User.not_finished.no_fellowship.count %></td>
+      </tr>
+      <tr>
         <th>MDT<br/> Type</th>
         <td>ILD <br/>MDT</td>
-        <td><%= User.ild_mdt.finished.count %></td>
-        <td><%= User.ild_mdt.not_finished.count %></td>
+        <td><%= User.ild_mdt.finished.count %> <%= fp User.ild_mdt.finished.count %> </td>
+        <td><%= User.ild_mdt.not_finished.count %> <%= not_fp User.ild_mdt.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>General <br/>respiratory MDT</td>
-        <td><%= User.gen_mdt.finished.count %></td>
-        <td><%= User.gen_mdt.not_finished.count %></td>
+        <td><%= User.gen_mdt.finished.count %> <%= fp User.gen_mdt.finished.count %></td>
+        <td><%= User.gen_mdt.not_finished.count %> <%= not_fp User.gen_mdt.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>No <br/>MDT</td>
-        <td><%= User.no_mdt.finished.count %></td>
-        <td><%= User.no_mdt.not_finished.count %></td>
+        <td><%= User.no_mdt.finished.count %> <%= fp User.no_mdt.finished.count %></td>
+        <td><%= User.no_mdt.not_finished.count %> <%= not_fp User.no_mdt.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.ild_mdt.finished.count + User.gen_mdt.finished.count + User.no_mdt.finished.count %></td>
+        <td><%= User.ild_mdt.not_finished.count + User.gen_mdt.not_finished.count + User.no_mdt.not_finished.count %></td>
       </tr>
       <tr>
         <th>Institution <br/>type</th>
         <td>University <br/>Hospital</td>
-        <td><%= User.university.finished.count %></td>
-        <td><%= User.university.not_finished.count %></td>
+        <td><%= User.university.finished.count %> <%= fp User.university.finished.count %></td>
+        <td><%= User.university.not_finished.count %> <%= not_fp User.university.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>Community<br/> Hospital</td>
-        <td><%= User.non_university.finished.count %></td>
-        <td><%= User.non_university.not_finished.count %></td>
+        <td><%= User.non_university.finished.count %> <%= fp User.non_university.finished.count %></td>
+        <td><%= User.non_university.not_finished.count %> <%= not_fp User.non_university.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.university.finished.count + User.non_university.finished.count  %></td>
+        <td><%= User.university.not_finished.count + User.non_university.not_finished.count  %></td>
       </tr>
       <tr>
         <th>How many cases of IPF do <br/>you diagnose per month?</th>
         <td>None. We refer all <br/> suspected cases</td>
-        <td><%= User.refer.finished.count %></td>
-        <td><%= User.refer.not_finished.count %></td>
+        <td><%= User.refer.finished.count %> <%= fp User.refer.finished.count %></td>
+        <td><%= User.refer.not_finished.count %> <%= not_fp User.refer.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>IPF/month<br/> = 1-10</td>
-        <td><%= User.ipf_one.finished.count %></td>
-        <td><%= User.ipf_one.not_finished.count %></td>
+        <td><%= User.ipf_one.finished.count %> <%= fp User.ipf_one.finished.count %></td>
+        <td><%= User.ipf_one.not_finished.count %> <%= not_fp User.ipf_one.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>IPF/month<br/> = 11-20</td>
-        <td><%= User.ipf_two.finished.count %></td>
-        <td><%= User.ipf_two.not_finished.count %></td>
+        <td><%= User.ipf_two.finished.count %> <%= fp User.ipf_two.finished.count %></td>
+        <td><%= User.ipf_two.not_finished.count %> <%= not_fp User.ipf_two.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>IPF/month<br/> = 20+ </td>
-        <td><%= User.ipf_three.finished.count %></td>
-        <td><%= User.ipf_three.not_finished.count %></td>
+        <td><%= User.ipf_three.finished.count %> <%= fp User.ipf_three.finished.count %></td>
+        <td><%= User.ipf_three.not_finished.count %> <%= not_fp User.ipf_three.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.refer.finished.count + User.ipf_one.finished.count + User.ipf_two.finished.count + User.ipf_three.finished.count %></td>
+        <td><%= User.refer.not_finished.count + User.ipf_one.not_finished.count + User.ipf_two.not_finished.count + User.ipf_three.not_finished.count %></td>
       </tr>
       <tr>
         <th>Do you have access to specialist <br/>thoracic radiology expertise?</th>
         <td>No</td>
-        <td><%= User.no_imaging.finished.count %></td>
-        <td><%= User.no_imaging.not_finished.count %></td>
+        <td><%= User.no_imaging.finished.count %> <%= fp User.no_imaging.finished.count %></td>
+        <td><%= User.no_imaging.not_finished.count %> <%= not_fp User.no_imaging.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>Not directly but<br/> in my network</td>
-        <td><%= User.indirect_imaging.finished.count %></td>
-        <td><%= User.indirect_imaging.not_finished.count %></td>
+        <td><%= User.indirect_imaging.finished.count %> <%= fp User.indirect_imaging.finished.count %></td>
+        <td><%= User.indirect_imaging.not_finished.count %> <%= not_fp User.indirect_imaging.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>Yes<br/> direct access</td>
-        <td><%= User.imaging.finished.count %></td>
-        <td><%= User.imaging.not_finished.count %></td>
+        <td><%= User.imaging.finished.count %> <%= fp User.imaging.finished.count %></td>
+        <td><%= User.imaging.not_finished.count %> <%= not_fp User.imaging.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.no_imaging.finished.count + User.indirect_imaging.finished.count + User.imaging.finished.count %></td>
+        <td><%= User.no_imaging.not_finished.count + User.indirect_imaging.not_finished.count + User.imaging.not_finished.count %></td>
       </tr>
       <tr>
         <th>Do you have access to specialist <br/>thoracic pathology expertise?</th>
         <td>No</td>
-        <td><%= User.no_histopathology.finished.count %></td>
-        <td><%= User.no_histopathology.not_finished.count %></td>
+        <td><%= User.no_histopathology.finished.count %> <%= fp User.no_histopathology.finished.count %></td>
+        <td><%= User.no_histopathology.not_finished.count %> <%= not_fp User.no_histopathology.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>Not directly but<br/> in my network</td>
-        <td><%= User.indirect_histopathology.finished.count %></td>
-        <td><%= User.indirect_histopathology.not_finished.count %></td>
+        <td><%= User.indirect_histopathology.finished.count %> <%= fp User.indirect_histopathology.finished.count %></td>
+        <td><%= User.indirect_histopathology.not_finished.count %> <%= not_fp User.indirect_histopathology.not_finished.count %></td>
       </tr>
       <tr>
         <td></td>
         <td>Yes<br/> direct access</td>
-        <td><%= User.histopathology.finished.count %></td>
-        <td><%= User.histopathology.not_finished.count %></td>
+        <td><%= User.histopathology.finished.count %> <%= fp User.histopathology.finished.count %></td>
+        <td><%= User.histopathology.not_finished.count %> <%= not_fp User.histopathology.not_finished.count %></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Total<br/>  number</td>
+        <td><%= User.no_histopathology.finished.count + User.indirect_histopathology.finished.count + User.histopathology.finished.count %></td>
+        <td><%= User.no_histopathology.not_finished.count + User.indirect_histopathology.not_finished.count + User.histopathology.not_finished.count %></td>
+      </tr>
+      <tr>
+        <th>Cryobiopsy <br/>availability</th>
+        <td></td>
+        <td><%= User.finished.cryobiopsy.count %>/<%= User.finished.no_cryobiopsy.count %> (<%= ((User.finished.cryobiopsy.count.to_f * 100)/(User.finished.no_cryobiopsy.count.to_f)).round(1) %>%)</td>
+        <td><%= User.not_finished.cryobiopsy.count %>/<%= User.not_finished.no_cryobiopsy.count %> (<%= ((User.not_finished.cryobiopsy.count.to_f * 100)/(User.not_finished.no_cryobiopsy.count.to_f)).round(1) %>%)</td>
       </tr>
       </tbody>
     </table>
   </div>
 </div>
+
+
+<% end %>

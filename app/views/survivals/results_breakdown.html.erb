@@ -1,0 +1,86 @@
+
+
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Group</th>
+      <th>Number of physicians</th>
+      <th>Mean exp</th>
+      <th>Median HR</th>
+      <th>Median Co</th>
+      <th>Number significant</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+    <tr>
+      <th>Expert</th>
+      <td><%= @survivals_count5 %></td>
+      <td><%=@exp5.round(1)%></td>
+      <td><%= median(@hazards5).round(2) %> IQR[<%= calculate_percentile(@hazards5, 0.25).round(2) %>-<%= calculate_percentile(@hazards5, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient5).round(2) %> IQR[<%= calculate_percentile(@coefficient5, 0.25).round(2) %>-<%= calculate_percentile(@coefficient5, 0.75).round(2) %>]</td>
+      <td><%= @significant5.count.to_s + "/" + @survivals5.count.to_s %> (<%= ((@significant5.count.to_f/ @survivals5.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>Others</th>
+      <td><%= @survivals_count6 %></td>
+      <td><%=@exp6.round(1)%></td>
+      <td><%= median(@hazards6).round(2) %> IQR[<%= calculate_percentile(@hazards6, 0.25).round(2) %>-<%= calculate_percentile(@hazards6, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient6).round(2) %> IQR[<%= calculate_percentile(@coefficient6, 0.25).round(2) %>-<%= calculate_percentile(@coefficient6, 0.75).round(2) %>]</td>
+      <td><%= @significant6.count.to_s + "/" + @survivals6.count.to_s %> (<%= ((@significant6.count.to_f/ @survivals6.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <th>MDT</th>
+    <td><%= @survivals_count1 %></td>
+    <td><%=@exp1.round(1)%></td>
+    <td><%= median(@hazards1).round(2) %> IQR[<%= calculate_percentile(@hazards1, 0.25).round(2) %>-<%= calculate_percentile(@hazards1, 0.75).round(2) %>]</td>
+    <td><%= median(@coefficient1).round(2) %> IQR[<%= calculate_percentile(@coefficient1, 0.25).round(2) %>-<%= calculate_percentile(@coefficient1, 0.75).round(2) %>]</td>
+    <td><%= @significant1.count.to_s + "/" + @survivals1.count.to_s %> (<%= ((@significant1.count.to_f/ @survivals1.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>No MDT</th>
+      <td><%= @survivals_count2 %></td>
+      <td><%=@exp2.round(1)%></td>
+      <td><%= median(@hazards2).round(2) %> IQR[<%= calculate_percentile(@hazards2, 0.25).round(2) %>-<%= calculate_percentile(@hazards2, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient2).round(2) %> IQR[<%= calculate_percentile(@coefficient2, 0.25).round(2) %>-<%= calculate_percentile(@coefficient2, 0.75).round(2) %>]</td>
+      <td><%= @significant2.count.to_s + "/" + @survivals2.count.to_s %> (<%= ((@significant2.count.to_f/ @survivals2.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>University</th>
+      <td><%= @survivals_count3 %></td>
+      <td><%=@exp3.round(1)%></td>
+      <td><%= median(@hazards3).round(2) %> IQR[<%= calculate_percentile(@hazards3, 0.25).round(2) %>-<%= calculate_percentile(@hazards3, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient3).round(2) %> IQR[<%= calculate_percentile(@coefficient3, 0.25).round(2) %>-<%= calculate_percentile(@coefficient3, 0.75).round(2) %>]</td>
+      <td><%= @significant3.count.to_s + "/" + @survivals3.count.to_s %> (<%= ((@significant3.count.to_f/ @survivals3.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>Non-university</th>
+      <td><%= @survivals_count4 %></td>
+      <td><%=@exp4.round(1)%></td>
+      <td><%= median(@hazards4).round(2) %> IQR[<%= calculate_percentile(@hazards4, 0.25).round(2) %>-<%= calculate_percentile(@hazards4, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient4).round(2) %> IQR[<%= calculate_percentile(@coefficient4, 0.25).round(2) %>-<%= calculate_percentile(@coefficient4, 0.75).round(2) %>]</td>
+      <td><%= @significant4.count.to_s + "/" + @survivals4.count.to_s %> (<%= ((@significant4.count.to_f/ @survivals4.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>Weekly MDT</th>
+      <td><%= @survivals_count7 %></td>
+      <td><%=@exp7.round(1)%></td>
+      <td><%= median(@hazards7).round(2) %> IQR[<%= calculate_percentile(@hazards7, 0.25).round(2) %>-<%= calculate_percentile(@hazards7, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient7).round(2) %> IQR[<%= calculate_percentile(@coefficient7, 0.25).round(2) %>-<%= calculate_percentile(@coefficient7, 0.75).round(2) %>]</td>
+      <td><%= @significant7.count.to_s + "/" + @survivals7.count.to_s %> (<%= ((@significant7.count.to_f/ @survivals7.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+    <tr>
+      <th>No MDT</th>
+      <td><%= @survivals_count8 %></td>
+      <td><%=@exp8.round(1)%></td>
+      <td><%= median(@hazards8).round(2) %> IQR[<%= calculate_percentile(@hazards8, 0.25).round(2) %>-<%= calculate_percentile(@hazards8, 0.75).round(2) %>]</td>
+      <td><%= median(@coefficient8).round(2) %> IQR[<%= calculate_percentile(@coefficient8, 0.25).round(2) %>-<%= calculate_percentile(@coefficient8, 0.75).round(2) %>]</td>
+      <td><%= @significant8.count.to_s + "/" + @survivals8.count.to_s %> (<%= ((@significant8.count.to_f/ @survivals8.count.to_f)*100).round(1) %>%)</td>
+    </tr>
+
+    </tbody>
+  </table>
+</div>
+

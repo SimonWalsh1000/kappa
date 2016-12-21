@@ -2,22 +2,41 @@
 
 <h2>Listing Survival Results</h2>
 
-<p><b>Number of users satisfying parameters:</b>
-<%= @survivals_count %></p>
+<p><b>Analysis 1:Number of users satisfying parameters:</b>
+<%= @survivals_count1 %></p>
 
-<p><b>Users:</b>
-<%= @users.map {|u| u.titleize }.join(", ") %></p>
-
-<p><b>Median HR (significant):</b>
-<%= median(@hazards).round(4) %> IQR[<%= calculate_percentile(@hazards, 0.25).round(4) %>-<%= calculate_percentile(@hazards, 0.75).round(4) %>]
+<p><b>Analysis 1:Median HR:</b>
+<%= median(@hazards1).round(4) %> IQR[<%= calculate_percentile(@hazards1, 0.25).round(4) %>-<%= calculate_percentile(@hazards1, 0.75).round(4) %>]
 </p>
 
-<p><b>Number significant</b>
-  <%= @significant.count.to_s + "/" + @survivals.count.to_s %>
+<p><b>Analysis 1:Median Co:</b>
+  <%= median(@coefficient1).round(4) %> IQR[<%= calculate_percentile(@coefficient1, 0.25).round(4) %>-<%= calculate_percentile(@coefficient1, 0.75).round(4) %>]
 </p>
 
+<p><b>Analysis 1:Number significant</b>
+  <%= @significant1.count.to_s + "/" + @survivals1.count.to_s %> <%= ((@significant1.count.to_f/ @survivals1.count.to_f)*100).round(2) %>
+</p>
 
-<h3>Significant</h3>
+<hr/>
+
+<p><b>Analysis 2:Number of users satisfying parameters:</b>
+  <%= @survivals_count2 %></p>
+
+<p><b>Analysis 2:Median HR:</b>
+  <%= median(@hazards2).round(4) %> IQR[<%= calculate_percentile(@hazards2, 0.25).round(4) %>-<%= calculate_percentile(@hazards2, 0.75).round(4) %>]
+</p>
+
+<p><b>Analysis 2:Median Co:</b>
+  <%= median(@coefficient2).round(4) %> IQR[<%= calculate_percentile(@coefficient2, 0.25).round(4) %>-<%= calculate_percentile(@coefficient2, 0.75).round(4) %>]
+</p>
+
+<p><b>Analysis 2:Number significant</b>
+  <%= @significant2.count.to_s + "/" + @survivals2.count.to_s %> <%= ((@significant2.count.to_f/ @survivals2.count.to_f)*100).round(2) %>
+</p>
+
+<hr/>
+
+<h3>Results</h3>
 
 <div class = "row">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -27,29 +46,102 @@
         <th>Number</th>
         <th>User</th>
         <th>Name</th>
+        <th>Email</th>
+        <th>Job</th>
         <th>Country</th>
         <th>IPF no.</th>
+
+          <th>Coefficient</th>
         <th>Hr</th>
         <th>P</th>
+        <th>Ci Higher</th>
         <th>Ci lower</th>
-        <th>Ci upper</th>
+        <th>Observer</th>
+        <th>Significant</th>
       </tr>
       </thead>
 
       <tbody>
       <% i = 0 %>
-      <% @significant.each do |survival| %>
+      <% @significant1.each do |survival| %>
           <% i = i + 1 %>
           <tr>
             <td><%= i %></td>
             <td><%= survival.user_id %></td>
-            <td><%= survival.name %></td>
+            <td><%= survival.name.titleize %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.email %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.job %></td>
             <td><%= Score.where(user_id: survival.user_id).first.country %></td>
             <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.b.round(4) %></td>
             <td><%= survival.hr.round(4) %></td>
             <td><%= survival.p.round(4) %></td>
             <td><%= survival.ci_lower.round(4) %></td>
             <td><%= survival.ci_upper.round(4) %></td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+      <% end %>
+      <% i = 0 %>
+      <% @not_significant1.each do |survival| %>
+          <% i = i + 1 %>
+          <tr>
+            <td><%= i %></td>
+            <td><%= survival.user_id %></td>
+            <td><%= survival.name.titleize %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.email %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.job %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.country %></td>
+            <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.b.round(4) %></td>
+            <td><%= survival.hr.round(4) %></td>
+            <td><%= survival.p.round(4) %></td>
+            <td><%= survival.ci_lower.round(4) %></td>
+            <td><%= survival.ci_upper.round(4) %></td>
+            <td>1</td>
+            <td>0</td>
+          </tr>
+      <% end %>
+      <tr><td>----</td><td>----</td><td>----</td><td>----</td><td>----</td><td>----</td>
+        <td>----</td><td>----</td><td>----</td><td>----</td><td>----</td><td>----</td></tr>
+      <% i = 0 %>
+      <% @significant2.each do |survival| %>
+          <% i = i + 1 %>
+          <tr>
+            <td><%= i %></td>
+            <td><%= survival.user_id %></td>
+            <td><%= survival.name.titleize %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.email %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.job %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.country %></td>
+            <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.b.round(4) %></td>
+            <td><%= survival.hr.round(4) %></td>
+            <td><%= survival.p.round(4) %></td>
+            <td><%= survival.ci_lower.round(4) %></td>
+            <td><%= survival.ci_upper.round(4) %></td>
+            <td>2</td>
+            <td>1</td>
+          </tr>
+      <% end %>
+      <% i = 0 %>
+      <% @not_significant2.each do |survival| %>
+          <% i = i + 1 %>
+          <tr>
+            <td><%= i %></td>
+            <td><%= survival.user_id %></td>
+            <td><%= survival.name.titleize %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.email %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.job %></td>
+            <td><%= Score.where(user_id: survival.user_id).first.country %></td>
+            <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.b.round(4) %></td>
+            <td><%= survival.hr.round(4) %></td>
+            <td><%= survival.p.round(4) %></td>
+            <td><%= survival.ci_lower.round(4) %></td>
+            <td><%= survival.ci_upper.round(4) %></td>
+            <td>2</td>
+            <td>0</td>
           </tr>
       <% end %>
       </tbody>
@@ -57,42 +149,3 @@
   </div>
 </div>
 
-<h3>Not significant</h3>
-
-<div class = "row">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <table class="table table-bordered">
-      <thead>
-      <tr>
-        <th>Number</th>
-        <th>User</th>
-        <th>Name</th>
-        <th>Country</th>
-        <th>IPF no.</th>
-        <th>Hr</th>
-        <th>P</th>
-        <th>Ci lower</th>
-        <th>Ci upper</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <% i = 0 %>
-      <% @not_significant.each do |survival| %>
-          <% i = i + 1 %>
-          <tr>
-            <td><%= i %></td>
-            <td><%= survival.user_id %></td>
-            <td><%= survival.name %></td>
-            <td><%= Score.where(user_id: survival.user_id).first.country %></td>
-            <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
-            <td><%= survival.hr.round(4) %></td>
-            <td><%= survival.p.round(4) %></td>
-            <td><%= survival.ci_lower.round(4) %></td>
-            <td><%= survival.ci_upper.round(4) %></td>
-          </tr>
-      <% end %>
-      </tbody>
-    </table>
-  </div>
-</div>

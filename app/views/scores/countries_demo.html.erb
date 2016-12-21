@@ -1,0 +1,27 @@
+
+<%= @countries %>
+<div class = "row">
+  <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-1 col-sm-12 col-xs-12">
+    <h3>Demographics by country</h3>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: left">Country</th>
+        <th style = "text-align: center">Users</th>
+        <th style = "text-align: center">Uni/Not Uni</th>
+        <th style = "text-align: center">ILD/Gen/None</th>
+        <th style = "text-align: center">Experts/Physician</th>
+      </tr>
+      </thead>
+      <% @demographics.each do |c, a| %>
+          <tr>
+            <td style = "width:120px; text-align: center"><%= c %></td>
+            <td style = "width:120px; text-align: center"><%= a[0]%></td>
+            <td style = "width:120px; text-align: center"><%= a[3][0] %>/<%= a[3][1] %></td>
+            <td style = "width:120px; text-align: center"><%= a[1][0] %>/<%= a[1][1] %>/<%= a[1][2] %></td>
+            <td style = "width:120px; text-align: center"><%= a[2][0] %>/<%= a[2][1] %></td>
+          </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

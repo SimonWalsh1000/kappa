@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: survivals
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer
+#  name       :string
+#  b          :float
+#  se         :float
+#  hr         :float
+#  ci_lower   :float
+#  ci_upper   :float
+#  p          :float
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Survival < ActiveRecord::Base
 
 

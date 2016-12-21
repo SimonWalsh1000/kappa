@@ -10,15 +10,21 @@
         <th style = "text-align: center">Users</th>
         <th style = "text-align: center">Mean experience</th>
         <th style = "text-align: center">IPF</th>
-
       </tr>
       </thead>
       <% @kappas.each do |c, k| %>
           <tr>
             <td style = "width:120px; text-align: center"><%= c %></td>
             <td style = "width:120px; text-align: center"><%= k[0] %></td>
-            <td style = "width:120px; text-align: center"><%= k[1] %> years</td>
-            <td style = "width:120px; text-align: center"><%= k[2].round(3) if k.present?  %></td>
+            <td style = "width:120px; text-align: center"><%= k[1] %></td>
+            <td style = "width:120px; text-align: center"><%= k[2][0].round(3) if k.present?  %>
+
+              <% if k[0] > 2 %>
+              (<%=k[2][1] %>-<%=k[2][2]%>)
+              <% end %>
+
+
+            </td>
           </tr>
       <% end %>
     </table>

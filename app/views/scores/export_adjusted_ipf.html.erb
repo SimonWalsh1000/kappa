@@ -1,11 +1,10 @@
-<h2>Download IPF category<br/><small></small></h2>
-<%= @kappa_statement %>
-<hr/>
-<%= @variables %>
+<h2>Download Adjusted IPF category<br/><small></small></h2>
+
+<%= @adjusted_scores.map(&:name)%>
 <hr/>
 <p>
   Download file:
-  <%= link_to "CSV", ipf_scores_path(format: "csv") %>
+  <%= link_to "CSV", ipf_adjusted_scores_path(format: "csv") %>
 </p>
 
 

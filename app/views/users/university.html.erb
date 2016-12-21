@@ -1,0 +1,150 @@
+
+
+
+
+<h2>Participants (n=<%= User.finished.count %>)</h2>
+
+
+<hr/>
+
+<% if User.count > 1 %>
+
+    <div class = "row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th>Grouping</th>
+            <th>University (n=<%= @users.university.count %>)</th>
+            <th>Not University (n=<%= @users.non_university.count %>)</th>
+            <th>P-value</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th>Experience</th>
+            <td> <%= (@users.university.map(&:experience).sum.to_f/@users.university.count.to_f).round(1) %> </td>
+            <td> <%= (@users.non_university.map(&:experience).sum.to_f/@users.non_university.count.to_f).round(1) %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Fellowship</th>
+            <td> <%=@users.university.fellowship.count %> </td>
+            <td> <%=@users.non_university.fellowship.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>No MDTM</th>
+            <td> <%=@users.university.no_mdt.count %> </td>
+            <td> <%=@users.non_university.no_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Daily MDTM</th>
+            <td> <%=@users.university.daily_mdt.count %> </td>
+            <td> <%=@users.non_university.daily_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Weekly MDTM</th>
+            <td> <%=@users.university.weekly_mdt.count %> </td>
+            <td> <%=@users.non_university.weekly_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Fortnightly MDTM</th>
+            <td> <%=@users.university.fortnightly_mdt.count %> </td>
+            <td> <%=@users.non_university.fortnightly_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Monthly MDTM</th>
+            <td> <%=@users.university.monthly_mdt.count %> </td>
+            <td> <%=@users.non_university.monthly_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Less than 1/month MDTM</th>
+            <td> <%=@users.university.rare_mdt.count %> </td>
+            <td> <%=@users.non_university.rare_mdt.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>IPF we refer</th>
+            <td> <%=@users.university.refer.count %> </td>
+            <td> <%=@users.non_university.refer.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>IPF 1..10</th>
+            <td><%=@users.university.ipf_one.count %> </td>
+            <td> <%=@users.non_university.ipf_one.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>IPF 11..20</th>
+            <td><%=@users.university.ipf_two.count %> </td>
+            <td> <%=@users.non_university.ipf_two.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>IPF +20</th>
+            <td><%=@users.university.ipf_three.count %> </td>
+            <td> <%=@users.non_university.ipf_three.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Rad direct access</th>
+            <td><%=@users.university.imaging.count %> </td>
+            <td> <%=@users.non_university.imaging.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Rad indirect access</th>
+            <td><%=@users.university.indirect_imaging.count %> </td>
+            <td> <%=@users.non_university.indirect_imaging.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Rad no access</th>
+            <td><%=@users.university.no_imaging.count %> </td>
+            <td> <%=@users.non_university.no_imaging.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+          <tr>
+            <th>Path direct access</th>
+            <td><%=@users.university.histopathology.count %> </td>
+            <td> <%=@users.non_university.histopathology.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Path indirect access</th>
+            <td><%=@users.university.indirect_histopathology.count %> </td>
+            <td> <%=@users.non_university.indirect_histopathology.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Path no access</th>
+            <td><%=@users.university.no_histopathology.count %> </td>
+            <td> <%=@users.non_university.no_histopathology.count %> </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>Cryobiopsy</th>
+            <td> <%=@users.university.cryobiopsy.count %> </td>
+            <td> <%=@users.non_university.cryobiopsy.count %> </td>
+            <td></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+<% end %>
+
+<p>
+  Download file:
+  <%= link_to "CSV", export_comparisons_users_path(format: "csv") %>
+</p>

@@ -3,8 +3,13 @@
 <h2>Listing Survival Data</h2>
 
 
+<p>Median HR: <%= @median_hr[0] %> [IQR <%= @median_hr[1] %>-<%= @median_hr[2] %>]</p>
 
-      <div class = "row">
+<p>Significant: <%= @statistically_significant %>/<%= @total %></p>
+
+
+
+<div class = "row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <table class="table table-bordered">
             <thead>
@@ -18,6 +23,8 @@
               <th>P</th>
               <th>Ci lower</th>
               <th>Ci upper</th>
+              <th>mdt</th>
+              <th>uni</th>
             </tr>
             </thead>
 
@@ -32,9 +39,22 @@
                   <td><%= Score.where(user_id: survival.user_id).first.country %></td>
                   <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
                   <td><%= survival.hr.round(4) %></td>
-                  <td><%= survival.p.round(4) %></td>
+                  <td><%= survival.p.round(3) %></td>
                   <td><%= survival.ci_lower.round(4) %></td>
                   <td><%= survival.ci_upper.round(4) %></td>
+                  <td><%=
+
+                      Score.where(user_id: survival.user_id).some_mdt.count > 0 ? 1 : 0
+
+
+                  %></td>
+                  <td><%=
+
+
+                      Score.where(user_id: survival.user_id).university.count > 0 ? 1 : 0
+
+
+                  %></td>
                 </tr>
             <% end %>
             </tbody>

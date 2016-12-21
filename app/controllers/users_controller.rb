@@ -75,6 +75,21 @@ class UsersController < ApplicationController
     redirect_to users_path, notice: "Users imported."
   end
 
+  def university
+    @users = User.finished
+  end
+
+
+  def export_comparisons
+    @users = User.finished
+    respond_to do |format|
+      format.html
+      format.csv { send_data @users.export_comparisons }
+      format.xls
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

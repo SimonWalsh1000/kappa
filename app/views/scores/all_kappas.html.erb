@@ -1,0 +1,51 @@
+
+        <h4>User ids satisfying parameters:<br/></h4>
+        <%= @query %>
+
+        <hr/>
+
+        <h4>Users: </h4>
+        <%= @names.join(", ") %>
+
+        <hr/>
+
+        <h4>Number of users satisfying parameters:<br/></h4>
+        <%= @query.count %>
+
+        <hr/>
+
+        <h4>Expected number of Kappas:<br/></h4>
+        <%= ((@query.count) * ((@query.count) - 1 ))/2 %>
+
+        <hr/>
+
+        <h4>Number of IPF kappas calculated:<br/></h4>
+        <%= @kappas_ipf.count %>
+
+        <h4>Number of CTD kappas calculated:<br/></h4>
+        <%= @kappas_ctd.count %>
+
+        <h4>Number of NSIP kappas calculated:<br/></h4>
+        <%= @kappas_nsip.count %>
+
+        <h4>Number of HP kappas calculated:<br/></h4>
+        <%= @kappas_hp.count %>
+
+        <hr/>
+
+        <h4>Median IPF:<br/></h4>
+        <%= median(@kappas_ipf).round(4) %> IQR[<%= calculate_percentile(@kappas_ipf, 0.25).round(4) %>-<%= calculate_percentile(@kappas_ipf, 0.75).round(4) %>]
+        <hr/>
+
+        <h4>Median CTD:<br/></h4>
+        <%= median(@kappas_ctd).round(4) %> IQR[<%= calculate_percentile(@kappas_ctd, 0.25).round(4) %>-<%= calculate_percentile(@kappas_ctd, 0.75).round(4) %>]
+        <hr/>
+
+        <h4>Median NSIP:<br/></h4>
+        <%= median(@kappas_nsip).round(4) %> IQR[<%= calculate_percentile(@kappas_nsip, 0.25).round(4) %>-<%= calculate_percentile(@kappas_nsip, 0.75).round(4) %>]
+        <hr/>
+
+        <h4>Median HP:<br/></h4>
+        <%= median(@kappas_hp).round(4) %> IQR[<%= calculate_percentile(@kappas_hp, 0.25).round(4) %>-<%= calculate_percentile(@kappas_hp, 0.75).round(4) %>]
+        <hr/>
+

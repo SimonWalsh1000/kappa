@@ -1,3 +1,56 @@
+# == Schema Information
+#
+# Table name: scores
+#
+#  id                      :integer          not null, primary key
+#  case_id                 :integer
+#  patient_id              :integer
+#  user_id                 :integer
+#  dx1                     :string
+#  dx2                     :string
+#  dx3                     :string
+#  dx4                     :string
+#  dx5                     :string
+#  dxcon1                  :integer
+#  dxcon2                  :integer
+#  dxcon3                  :integer
+#  dxcon4                  :integer
+#  dxcon5                  :integer
+#  job                     :string
+#  description             :string
+#  experience              :integer
+#  institution             :string
+#  fellowship              :string
+#  meeting_type            :string
+#  ipf_diagnostic_approach :string
+#  mdt_frequency           :string
+#  ipf_number_cases        :string
+#  imaging                 :string
+#  histopathology          :string
+#  ipf                     :integer
+#  hp                      :integer
+#  nsip                    :integer
+#  ctd                     :integer
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  country                 :string
+#  fname                   :string
+#  lname                   :string
+#  status                  :string
+#  biopsy                  :string
+#  cryo                    :string
+#  fibroticbehaviour       :integer
+#  treatment_required      :integer
+#  limitedbehaviour        :integer
+#  reversiblebehaviour     :integer
+#  mgt                     :string
+#  comment                 :string
+#  continent               :string
+#  strata                  :integer
+#  cat                     :integer
+#  email                   :string
+#
+
 class Score < ActiveRecord::Base
 
   include ScoresHelper
@@ -10,9 +63,13 @@ class Score < ActiveRecord::Base
 
   scope :gen_mdt, -> { where(meeting_type: "Yes, I attend a general respiratory MDT meeting")}
 
+  scope :some_mdt, -> { where("meeting_type = ? or meeting_type = ?", "Yes, I attend a dedicated ILD MDT meeting", "Yes, I attend a general respiratory MDT meeting")}
+
   scope :no_mdt, -> { where(meeting_type: "No, I do not attend/have access to a regular respiratory MDT meeting")}
 
   scope :refer, -> { where(ipf_number_cases: "0.0")}
+
+  scope :some_ipf, -> { where("ipf_number_cases = ? or ipf_number_cases = ? or ipf_number_cases = ?", "1.0", "2.0", "3,0")}
 
   scope :ipf_one, -> { where(ipf_number_cases: "1.0")}
 
@@ -55,6 +112,24 @@ class Score < ActiveRecord::Base
   scope :cat_one, -> { where("cat = ? or cat = ? or cat = ?", 0,1,2)}
 
   scope :cat_two, -> { where("cat = ? or cat = ? or cat = ? or cat = ?", 3,4,5,6)}
+
+  scope :frequent_mdt, -> { where("mdt_frequency = ? or mdt_frequency = ?", "Weekly", "Fortnightly")}
+
+  scope :very_frequent_mdt, -> { where("mdt_frequency = ?", "Weekly")}
+
+  scope :monthly_mdt, -> { where("mdt_frequency = ?", "Monthly")}
+
+  scope :fortnightly_mdt, -> { where("mdt_frequency = ?", "Fortnightly")}
+
+  scope :weekly_mdt, -> { where("mdt_frequency = ?", "Weekly")}
+
+  scope :daily_mdt, -> { where("mdt_frequency = ?", "Daily")}
+
+  scope :rare_mdt, -> { where("mdt_frequency = ?", "Less than once per month")}
+
+  scope :not_weekly_mdt, -> { where("mdt_frequency = ? or mdt_frequency = ? or mdt_frequency = ?", "Less than once per month", "Fortnightly", "Monthly")}
+
+
 
 
 
@@ -165,6 +240,18 @@ class Score < ActiveRecord::Base
     self.dx1 == "Idiopathic pulmonary fibrosis" ? 1 : 0
   end
 
+
+
+  def adjusted_ipf_cat
+    if self.dx1 == "Idiopathic pulmonary fibrosis"
+      1
+    elsif self.dx2 == "Idiopathic pulmonary fibrosis" && self.dxcon1 == 50 && self.dxcon2 == 50  && (self.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone) assuming the patient satisfies local prescribing criteria." || self.mgt == "IPF-specific therapy, (i.e. Nintedanib, Pirfenidone), if it were available in my country" || self.mgt == "IPF-specific therapy (i.e. Nintedanib, Pirfenidone - one or both are available)" )
+      1
+    else
+      0
+    end
+  end
+
   def diagnosis_cat
     case self.dx1
       when "Idiopathic pulmonary fibrosis"
@@ -200,14 +287,14 @@ class Score < ActiveRecord::Base
   # adjust this code to get subgroups
 
   def self.to_diagnosis_csv(options = {})
-    number_of_columns = Score.novice.all.map(&:user_id).uniq.count
+    number_of_columns = Score.all.map(&:user_id).uniq.count
     CSV.generate(options) do |csv|
       column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
       csv << column_names
       i = 0
       60.times do
         i = i + 1
-        row = Score.novice.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.diagnosis_cat }
+        row = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.diagnosis_cat }
         csv << row
 
       end
@@ -215,34 +302,49 @@ class Score < ActiveRecord::Base
   end
 
   # def self.to_ipf_csv(options = {})
-  #   # number_of_columns = Score.all.map(&:user_id).uniq.count
   #   CSV.generate(options) do |csv|
-  #     # column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
-  #     column_names = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k).first.fname.downcase + "_" + Score.where(user_id: k).first.user_id.to_s  }
+  #     # Remember! for STATA you need to use the STUB "var" with NO UNDERSCORE
+  #      column_names = Score.group(:user_id).count.map { |k, v|  "var" + Score.where(user_id: k).first.user_id.to_s  }
   #     csv << column_names
   #     i = 0
   #     60.times do
   #       i = i + 1
-  #       row = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
+  #       row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
   #       csv << row
-  #
   #     end
   #   end
   # end
 
+  # THIS CODE IS FOR CHECKING THE "RESULTS" EXCEL SHEET - IT WILL GIVE YOU THE IPF CAT WITH THE PHYSICIANS NAME
   def self.to_ipf_csv(options = {})
-    # number_of_columns = Score.all.map(&:user_id).uniq.count
     CSV.generate(options) do |csv|
-      # column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
-      column_names = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k).first.user_id }
+      # Remember! for STATA you need to use the STUB "var" with NO UNDERSCORE
+      # column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.fname + "_" + Score.where(user_id: k).first.lname }
+      # column_names = Score.group(:user_id).count.map { |k, v|  "var" + Score.where(user_id: k).first.user_id.to_s  }
+      column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.user_id}
       csv << column_names
       # i = 0
       # 60.times do
       #   i = i + 1
-      #   row = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
+      #   row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
       #   csv << row
-      #
       # end
+    end
+  end
+
+  def self.to_adjusted_ipf_csv(options = {})
+    CSV.generate(options) do |csv|
+      # Remember! for STATA you need to use the STUB "var" with NO UNDERSCORE
+      column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.fname + "_" + Score.where(user_id: k).first.lname }
+      number_of_columns = Score.all.map(&:user_id).uniq.count
+      column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
+      csv << column_names
+      i = 0
+      60.times do
+        i = i + 1
+        row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.adjusted_ipf_cat }
+        csv << row
+      end
     end
   end
 

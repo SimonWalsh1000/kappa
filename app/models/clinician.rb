@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: clinicians
+#
+#  id         :integer          not null, primary key
+#  name       :string
+#  email      :string
+#  country    :string
+#  society    :string
+#  general    :string
+#  specialty  :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Clinician < ActiveRecord::Base
 
 

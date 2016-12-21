@@ -4,7 +4,9 @@ Rails.application.routes.draw do
     collection do
       get :data
       get :upload
+      get :university
       post :import
+      get :export_comparisons
     end
   end
 
@@ -19,6 +21,8 @@ Rails.application.routes.draw do
   resources :survivals do
     collection do
       get :results
+      get :results_breakdown
+      get :countries_survival
       get :upload
       post :import
     end
@@ -28,6 +32,7 @@ Rails.application.routes.draw do
     collection do
       get :authors
       get :countries_kappa
+      get :countries_demo
       get :nuclear
       get :upload
       get :excel
@@ -40,11 +45,15 @@ Rails.application.routes.draw do
       get :discrepancy
       get :export
       get :export_ipf
+      get :export_adjusted_ipf
       get :ipf
+      get :ipf_adjusted
       get :export_diagnosis
       get :diagnosis
       get :management
       get :experience
+      get :completed_breakdown
+      get :all_kappas
     end
   end
 
