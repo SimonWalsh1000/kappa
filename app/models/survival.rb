@@ -46,6 +46,10 @@ class Survival < ActiveRecord::Base
     end
   end
 
+  def self.expert
+    Survival.all.select {|s| Score.find(s.user_id).status == "true"}
+  end
+
 
 
 end

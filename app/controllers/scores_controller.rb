@@ -17,12 +17,48 @@ class ScoresController < ApplicationController
   def completed_breakdown
   end
 
+  def confidence
+
+    @total = Score.all.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @total_confident = (((Score.all.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @total.to_f).round(1)
+
+
+    @expert = Score.expert.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @expert_confident = (((Score.expert.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @expert.to_f).round(1)
+
+    @uni = Score.university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @uni_confident = (((Score.university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @uni.to_f).round(1)
+
+    @non_uni = Score.non_university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @non_uni_confident = (((Score.non_university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @non_uni.to_f).round(1)
+
+    @novice = Score.novice.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @novice_confident = (((Score.novice.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @novice.to_f).round(1)
+
+    @mdt = Score.weekly_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @mdt_confident = (((Score.weekly_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @mdt.to_f).round(1)
+
+    @no_mdt = Score.no_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis"}.count
+    @no_mdt_confident = (((Score.no_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @no_mdt.to_f).round(1)
+
+
+    @test = Array.new
+    @test3 =  Score.expert.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+      b > 65 ? @test << 1 : @test << 0
+    end
+
+  end
+
   def analysis
     @score_count = Score.count
     @user_array = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }
     kappa(6, 8, "ipf")
     @rater1_id = 6
     @rater2_id = 8
+  end
+
+  def ipf_agreement
+    @scores = Score.all.group_by(&:case_id).map{|a, b| [a => [Score.where(id: b.map(&:id)).where(dx1: "Idiopathic pulmonary fibrosis").expert.count, Score.where(id: b.map(&:id)).where(dx1: "Idiopathic pulmonary fibrosis").novice.count]]}
   end
 
   def experience
@@ -114,7 +150,7 @@ class ScoresController < ApplicationController
     @demographics = Hash.new
     @countries.each do |c|
       user_count_for_country = Score.where(country: c).count/60
-      mdt_array = [Score.where(country: c).ild_mdt.count/60, Score.where(country: c).gen_mdt.count/60, Score.where(country: c).no_mdt.count/60]
+      mdt_array = [Score.where(country: c).ild_mdt.count/60 + Score.where(country: c).gen_mdt.count/60, Score.where(country: c).no_mdt.count/60]
       experts = [Score.where(country: c).expert.count/60, Score.where(country: c).novice.count/60]
       uni = [Score.where(country: c).university.count/60, Score.where(country: c).non_university.count/60]
       @demographics[c] = [user_count_for_country, mdt_array, experts, uni]
@@ -137,7 +173,7 @@ class ScoresController < ApplicationController
   def export_ipf
     @kappa_statement = "kap " + Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.map { |var| "var" + var.to_s }.join(" ")
     @variables = (1..(Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| k }.count)).to_a.map { |var| "var" + var.to_s }.join(" ")
-    @test = Score.where(lname: "Rokadia")
+    @test = Score.where(lname: "Morais")
 
   end
 
@@ -190,6 +226,53 @@ class ScoresController < ApplicationController
     @test = Score.where(lname: "Wilsher")
 
   end
+
+
+  def confidence_download
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_confidence_csv }
+      format.xls
+    end
+  end
+
+  def number_of_ipf_diagnoses
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_number_of_ipf_diagnoses_csv }
+      format.xls
+    end
+  end
+
+  def number_of_ipf_diagnoses_wk
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_number_of_ipf_diagnoses_wk_csv }
+      format.xls
+    end
+  end
+
+  def number_of_high_confidence_ipf_diagnoses
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_number_of_high_confidence_ipf_diagnoses }
+      format.xls
+    end
+  end
+
+  def number_of_high_confidence_ipf_diagnoses_wk
+    @scores = Score.order(:id)
+    respond_to do |format|
+      format.html
+      format.csv { send_data @scores.to_number_of_high_confidence_ipf_diagnoses_wk_csv }
+      format.xls
+    end
+  end
+
 
   # GET /scores/1
   # GET /scores/1.json

@@ -2,6 +2,12 @@
 
 <h2>Listing Survival Results</h2>
 
+<h2>Remove radiologists</h2>
+
+<h2>diazpatino@gmail.com</h2>
+
+<h2>Bartholmai</h2>
+
 <p><b>Analysis 1:Number of users satisfying parameters:</b>
 <%= @survivals_count1 %></p>
 
@@ -11,6 +17,10 @@
 
 <p><b>Analysis 1:Median Co:</b>
   <%= median(@coefficient1).round(4) %> IQR[<%= calculate_percentile(@coefficient1, 0.25).round(4) %>-<%= calculate_percentile(@coefficient1, 0.75).round(4) %>]
+</p>
+
+<p><b>Analysis 1:Median C:</b>
+  <%= median(@c1).round(4) %> IQR[<%= calculate_percentile(@c1, 0.25).round(4) %>-<%= calculate_percentile(@c1, 0.75).round(4) %>]
 </p>
 
 <p><b>Analysis 1:Number significant</b>
@@ -28,6 +38,10 @@
 
 <p><b>Analysis 2:Median Co:</b>
   <%= median(@coefficient2).round(4) %> IQR[<%= calculate_percentile(@coefficient2, 0.25).round(4) %>-<%= calculate_percentile(@coefficient2, 0.75).round(4) %>]
+</p>
+
+<p><b>Analysis 1:Median C:</b>
+  <%= median(@c2).round(4) %> IQR[<%= calculate_percentile(@c2, 0.25).round(4) %>-<%= calculate_percentile(@c2, 0.75).round(4) %>]
 </p>
 
 <p><b>Analysis 2:Number significant</b>
@@ -50,8 +64,8 @@
         <th>Job</th>
         <th>Country</th>
         <th>IPF no.</th>
-
-          <th>Coefficient</th>
+        <th>C-index</th>
+        <th>Coefficient</th>
         <th>Hr</th>
         <th>P</th>
         <th>Ci Higher</th>
@@ -73,6 +87,7 @@
             <td><%= Score.where(user_id: survival.user_id).first.job %></td>
             <td><%= Score.where(user_id: survival.user_id).first.country %></td>
             <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.c.round(8) %></td>
             <td><%= survival.b.round(4) %></td>
             <td><%= survival.hr.round(4) %></td>
             <td><%= survival.p.round(4) %></td>
@@ -93,11 +108,13 @@
             <td><%= Score.where(user_id: survival.user_id).first.job %></td>
             <td><%= Score.where(user_id: survival.user_id).first.country %></td>
             <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.c.round(8) %></td>
             <td><%= survival.b.round(4) %></td>
             <td><%= survival.hr.round(4) %></td>
             <td><%= survival.p.round(4) %></td>
             <td><%= survival.ci_lower.round(4) %></td>
             <td><%= survival.ci_upper.round(4) %></td>
+
             <td>1</td>
             <td>0</td>
           </tr>
@@ -115,6 +132,7 @@
             <td><%= Score.where(user_id: survival.user_id).first.job %></td>
             <td><%= Score.where(user_id: survival.user_id).first.country %></td>
             <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.c.round(8) %></td>
             <td><%= survival.b.round(4) %></td>
             <td><%= survival.hr.round(4) %></td>
             <td><%= survival.p.round(4) %></td>
@@ -135,6 +153,7 @@
             <td><%= Score.where(user_id: survival.user_id).first.job %></td>
             <td><%= Score.where(user_id: survival.user_id).first.country %></td>
             <td><%= Score.where(user_id: survival.user_id, dx1: "Idiopathic pulmonary fibrosis").count %></td>
+            <td><%= survival.c.round(8) %></td>
             <td><%= survival.b.round(4) %></td>
             <td><%= survival.hr.round(4) %></td>
             <td><%= survival.p.round(4) %></td>

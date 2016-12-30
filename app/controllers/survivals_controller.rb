@@ -81,23 +81,23 @@ class SurvivalsController < ApplicationController
   def results
 
     # analysis group 1
-    ids1 = Score.some_ipf.map(&:user_id).uniq
-    @users1 = Score.not_weekly_mdt.university.map(&:fname).uniq
+    ids1 = Score.expert.map(&:user_id).uniq
     @survivals1 = Survival.where(user_id: ids1)
     @survivals_count1 = @survivals1.count
     @not_significant1 = @survivals1.select {|s| s.p > 0.05 }
     @significant1 = @survivals1.select {|s| s.p <= 0.05 }
     @hazards1 = @survivals1.map(&:hr)
+    @c1 = @survivals1.map(&:c)
     @coefficient1 = @survivals1.map(&:b)
 
     # analysis group 2
-    ids2 = Score.refer.map(&:user_id).uniq
-    @users2 = Score.no_mdt.university.map(&:fname).uniq
+    ids2 = Score.novice.university.weekly_mdt.map(&:user_id).uniq
     @survivals2 = Survival.where(user_id: ids2)
     @survivals_count2 = @survivals2.count
     @not_significant2 = @survivals2.select {|s| s.p > 0.05 }
     @significant2 = @survivals2.select {|s| s.p <= 0.05 }
     @hazards2 = @survivals2.map(&:hr)
+    @c2 = @survivals2.map(&:c)
     @coefficient2 = @survivals2.map(&:b)
 
   end

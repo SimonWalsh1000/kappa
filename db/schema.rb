@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161123160919) do
+ActiveRecord::Schema.define(version: 20161228110940) do
 
   create_table "clinicians", force: :cascade do |t|
     t.string   "name"
@@ -82,8 +82,9 @@ ActiveRecord::Schema.define(version: 20161123160919) do
     t.float    "ci_lower"
     t.float    "ci_upper"
     t.float    "p"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.decimal  "c",          precision: 8, scale: 15
   end
 
   create_table "users", force: :cascade do |t|

@@ -23,6 +23,7 @@
               <th>P</th>
               <th>Ci lower</th>
               <th>Ci upper</th>
+              <th>C</th>
               <th>mdt</th>
               <th>uni</th>
             </tr>
@@ -42,6 +43,7 @@
                   <td><%= survival.p.round(3) %></td>
                   <td><%= survival.ci_lower.round(4) %></td>
                   <td><%= survival.ci_upper.round(4) %></td>
+                  <td><%= survival.c.round(8) %></td>
                   <td><%=
 
                       Score.where(user_id: survival.user_id).some_mdt.count > 0 ? 1 : 0

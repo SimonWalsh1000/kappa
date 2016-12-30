@@ -135,12 +135,14 @@ class User < ActiveRecord::Base
   end
 
   def comparisons
-    [self.author ? 1:0,
+    [self.finished ? 1:0,
+     self.author ? 1:0,
      self.institution_type == "University hospital" ? 1:0,
      self.first_name,
      self.last_name,
      self.experience,
      self.fellowship == "Yes" ? 1:0,
+     self.fellowship == "I am currently undergoing specialist training" ? 1:0,
      self.meeting== "No, I do not attend/have access to a regular respiratory MDT meeting" ? 0:1,
      self.mdt_frequency == "Daily" ? 1:0,
      self.mdt_frequency == "Weekly" ? 1:0,
@@ -148,9 +150,9 @@ class User < ActiveRecord::Base
      self.mdt_frequency == "Monthly" ? 1:0,
      self.mdt_frequency == "Less than once per month" ? 1:0,
      self.ipfphys == "0.0" ? 1:0,
-     self.ipfphys == "1.0" ? 1:0,
-     self.ipfphys == "2.0" ? 1:0,
-     self.ipfphys == "3.0" ? 1:0,
+     self.ipfphys == "1..10" ? 1:0,
+     self.ipfphys == "11..20" ? 1:0,
+     self.ipfphys == "20+" ? 1:0,
      self.imaging == "Yes" ? 1:0,
      self.imaging == "Not directly, but in my network" ? 1:0,
      self.imaging == "No" ? 1:0,
@@ -164,9 +166,9 @@ class User < ActiveRecord::Base
 
   def self.export_comparisons(options = {})
     CSV.generate(options) do |csv|
-      column_names = ["expert","academic", "first", "last", "exp", "fellow", "mdt", "daily", "weekly", "fortnight", "monthly", "rare", "refer", "ten", "20", "20plus", "rad", "indirect_rad", "no_rad", "path", "indirect_path", "no_path", "cryo"]
+      column_names = ["complete", "expert","academic", "first", "last", "exp", "fellowship", "intraining", "mdt", "daily", "weekly", "fortnight", "monthly", "rare", "refer", "ten", "20", "20plus", "rad", "indirect_rad", "no_rad", "path", "indirect_path", "no_path", "cryo"]
       csv << column_names
-      User.finished.each do |u|
+      User.all.each do |u|
         row = u.comparisons
         csv << row
       end

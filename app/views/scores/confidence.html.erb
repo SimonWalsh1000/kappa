@@ -1,0 +1,77 @@
+
+<h3>IPF confidence</h3>
+
+<%= Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} %>
+
+<div class = "row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th style = "text-align: left">Group</th>
+        <th style = "text-align: center">Confidence (70%)</th>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">All</td>
+        <td style = "text-align: center"><%= @total_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">Expert</td>
+        <td style = "text-align: center"><%= @expert_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">Non-expert</td>
+        <td style = "text-align: center"><%= @novice_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">Uni</td>
+        <td style = "text-align: center"><%= @uni_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">Non-uni</td>
+        <td style = "text-align: center"><%= @non_uni_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">Weekly MDT</td>
+        <td style = "text-align: center"><%= @mdt_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      <tr>
+        <td style = "text-align: left">no MDT</td>
+        <td style = "text-align: center"><%= @no_mdt_confident %>%</td>
+        <th style = "text-align: center">P value</th>
+      </tr>
+      </table>
+  </div>
+</div>
+
+<p>
+  Download confidence file (this may be redundant):
+  <%= link_to "CSV", confidence_download_scores_path(format: "csv") %>
+</p>
+
+<p>
+  Download number of IPF diagnoses file (for summary data on users ipf diagnoses):
+  <%= link_to "CSV", number_of_ipf_diagnoses_scores_path(format: "csv") %>
+</p>
+
+<p>
+  Download number of IPF diagnoses WK file (for rank sum comparisons):
+  <%= link_to "CSV", number_of_ipf_diagnoses_wk_scores_path(format: "csv") %>
+</p>
+
+<p>
+  Download number of high confidence IPF diagnoses per user file (for summary data on users ipf diagnoses):
+  <%= link_to "CSV", number_of_high_confidence_ipf_diagnoses_scores_path(format: "csv") %>
+</p>
+
+<p>
+  Download number of high confidence IPF diagnoses per user WK file (for rank sum comparions):
+  <%= link_to "CSV", number_of_high_confidence_ipf_diagnoses_wk_scores_path(format: "csv") %>
+</p>

@@ -91,6 +91,8 @@ class Score < ActiveRecord::Base
 
   scope :fellow, -> { where(fellowship: "Yes")}
 
+  scope :not_trainee, -> { where("fellowship != ?", "I am currently undergoing specialist training")}
+
   scope :not_fellow, -> { where(fellowship: "No")}
 
   scope :asia, -> { where(continent: "Asia")}
@@ -129,8 +131,19 @@ class Score < ActiveRecord::Base
 
   scope :not_weekly_mdt, -> { where("mdt_frequency = ? or mdt_frequency = ? or mdt_frequency = ?", "Less than once per month", "Fortnightly", "Monthly")}
 
+  scope :expert_ipf, -> { where("dx1 = ? and status = ?", "Idiopathic pulmonary fibrosis", "true")}
 
+  scope :imaging, -> { where(imaging: "Yes") }
 
+  scope :histopathology, -> { where(histopathology: "Yes") }
+
+  scope :no_imaging, -> { where(imaging: "No") }
+
+  scope :no_histopathology, -> { where(histopathology: "No") }
+
+  scope :indirect_imaging, -> { where(imaging: "Not directly, but in my network") }
+
+  scope :indirect_histopathology, -> { where(histopathology: "Not directly, but in my network") }
 
 
   before_save :stratify
@@ -319,15 +332,18 @@ class Score < ActiveRecord::Base
   def self.to_ipf_csv(options = {})
     CSV.generate(options) do |csv|
       # Remember! for STATA you need to use the STUB "var" with NO UNDERSCORE
-      # column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.fname + "_" + Score.where(user_id: k).first.lname }
+      column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.fname + "_" + Score.where(user_id: k).first.lname }
       # column_names = Score.group(:user_id).count.map { |k, v|  "var" + Score.where(user_id: k).first.user_id.to_s  }
-      column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.user_id}
+      # column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.user_id}
+      #  number_of_columns = Score.all.map(&:user_id).uniq.count
+      # column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
       csv << column_names
       # i = 0
       # 60.times do
       #   i = i + 1
-      #   row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
-      #   csv << row
+      #    row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.ipf_cat }
+         row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k).first.user_id }
+        csv << row
       # end
     end
   end
@@ -337,12 +353,13 @@ class Score < ActiveRecord::Base
       # Remember! for STATA you need to use the STUB "var" with NO UNDERSCORE
       column_names = Score.group(:user_id).count.map { |k, v|  Score.where(user_id: k).first.fname + "_" + Score.where(user_id: k).first.lname }
       number_of_columns = Score.all.map(&:user_id).uniq.count
-      column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
+      # column_names = (1..number_of_columns).map {|i| "var" + i.to_s }
       csv << column_names
       i = 0
       60.times do
         i = i + 1
         row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k, case_id: i).first.adjusted_ipf_cat }
+        # row = Score.group(:user_id).count.map { |k, v| Score.where(user_id: k).first.user_id  }
         csv << row
       end
     end
@@ -357,6 +374,125 @@ class Score < ActiveRecord::Base
         i = i + 1
         row = Score.group(:user_id).count.sort_by {|_key, value| value}.map { |k, v| Score.where(user_id: k, case_id: i).first.mgt_types }
         csv << row
+      end
+    end
+  end
+
+  def self.to_confidence_csv(options = {})
+    CSV.generate(options) do |csv|
+
+      @array = Array.new
+      @array_result =  Score.expert.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+      @array = Array.new
+      @array_result =  Score.novice.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+      @array = Array.new
+      @array_result =  Score.university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+      @array = Array.new
+      @array_result =  Score.non_university.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+      @array = Array.new
+      @array_result =  Score.weekly_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+      @array = Array.new
+      @array_result =  Score.no_mdt.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" }.each do |a,b|
+        b > 65 ? @array << 1 : @array << 0
+      end
+      csv << @array
+
+    end
+  end
+
+  def self.to_number_of_ipf_diagnoses_csv(options = {})
+    CSV.generate(options) do |csv|
+      # total
+      csv << Score.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # experts
+      csv << Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # novice
+      csv << Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # university
+      csv << Score.university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # non-university
+      csv << Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # weekly mdt
+      csv << Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # no mdt
+      csv << Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+    end
+  end
+
+  def self.to_number_of_high_confidence_ipf_diagnoses(options = {})
+    CSV.generate(options) do |csv|
+      # total
+      csv << Score.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # experts
+      csv << Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # novice
+      csv << Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # university
+      csv << Score.university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # non-university
+      csv << Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # weekly mdt
+      csv << Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+      # no mdt
+      csv << Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}
+    end
+  end
+
+  def self.to_number_of_ipf_diagnoses_wk_csv(options = {})
+    CSV.generate(options) do |csv|
+      # experts vs novice
+      csv << Array.new(Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+      # uni vs not uni
+      csv << Array.new(Score.university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+      # mdt vs not mdt
+      csv << Array.new(Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+    end
+  end
+
+  def self.to_number_of_high_confidence_ipf_diagnoses_wk_csv(options = {})
+    CSV.generate(options) do |csv|
+      # experts vs novice
+      csv << Array.new(Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.expert.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.novice.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+      # uni vs not uni
+      csv << Array.new(Score.university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.non_university.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+      # mdt vs not mdt
+      csv << Array.new(Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,1) + Array.new(Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]}.count,0)
+      csv << Score.weekly_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1]} + Score.no_mdt.where(dx1: "Idiopathic pulmonary fibrosis").reject{|s| s.dxcon1 < 70 }.group_by(&:user_id).map{|k,v| [k, v.count] }.map{ |a| a[1].to_s}
+    end
+  end
+
+    @expert_confident = (((Score.expert.pluck(:dx1, :dxcon1).select{ |a,b| a == "Idiopathic pulmonary fibrosis" && b > 65 }.count).to_f)*100/ @expert.to_f).round(1)
+
+  def self.to_csv(options = {})
+    CSV.generate(options) do |csv|
+      csv << column_names
+      all.each do |p|
+        csv << p.attributes.values_at(*column_names)
       end
     end
   end

@@ -54,6 +54,13 @@ Rails.application.routes.draw do
       get :experience
       get :completed_breakdown
       get :all_kappas
+      get :ipf_agreement
+      get :confidence
+      get :confidence_download
+      get :number_of_ipf_diagnoses
+      get :number_of_ipf_diagnoses_wk
+      get :number_of_high_confidence_ipf_diagnoses
+      get :number_of_high_confidence_ipf_diagnoses_wk
     end
   end
 

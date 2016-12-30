@@ -81,7 +81,7 @@ class UsersController < ApplicationController
 
 
   def export_comparisons
-    @users = User.finished
+    @users = User.all
     respond_to do |format|
       format.html
       format.csv { send_data @users.export_comparisons }
